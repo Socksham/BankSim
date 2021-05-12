@@ -13,7 +13,7 @@ public interface PersonRepository extends JpaRepository<Person, Long> {
     @Query("SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%')")
     List<Person> search(@Param("term")Bank term);
 
-    @Query("SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND concat(c.status, '') LIKE 'Accepted'")
+    @Query("SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%')")
     List<Person> searchAccepted(@Param("term")Bank term);
 
     @Query("SELECT c FROM Person c WHERE c.firstName LIKE %?1%")

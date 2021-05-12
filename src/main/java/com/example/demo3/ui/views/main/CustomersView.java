@@ -29,16 +29,16 @@ import java.util.TimerTask;
 @Component
 @Scope("prototype")
 @Route(value = "/customers", layout = MainLayout.class)
-@PageTitle("Bank | Banking")
-public class CustomersView extends VerticalLayout {
+@PageTitle("Bank | Customers")
+public class CustomersView extends Template {
     //add button to end people adding like close bank
     PersonService personService;
     PersonForm personForm;
-    Timer timer = new Timer();
+
     Button openBank = new Button("Open Bank");
     Button refresh = new Button("Refresh");
     Grid<Person> grid;
-    Boolean bankState = false;
+//    Boolean bankState = false;
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,16 +46,6 @@ public class CustomersView extends VerticalLayout {
     class addPerson extends TimerTask {
         public void run() {
             personService.save(new Person(appUser.getBank(), "ANDY", "DALTON", (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18));
-//            updateList();
-//            VaadinSession v1 = getUI().get().getSession();
-//            v1.access(new Command() {
-//                @Override
-//                public void execute() {
-//                    System.out.println("HEREwepfoijwef");
-//                    grid.setItems(personService.findAll(appUser.getBank()));
-//                }
-//            });
-//            refresh.click();
             System.out.println(personService.findAll(appUser.getBank()));
         }
     }
@@ -78,12 +68,19 @@ public class CustomersView extends VerticalLayout {
             changeState();
         });
 
+        if(bankState){
+            openBank.setText("Close Bank");
+        }else{
+            openBank.setText("Open Bank");
+        }
+
         refresh.addClickListener(click -> {
             grid.setItems(personService.findAll(appUser.getBank()));
         });
 
         personForm = new PersonForm();
         personForm.addListener(PersonForm.AcceptEvent.class, this::saveContactAccept);
+        personForm.addListener(PersonForm.RejectEvent.class, this::saveContactReject);
         personForm.addListener(PersonForm.CloseEvent.class, e -> closeEditor());
 
         Div content = new Div(grid, personForm);

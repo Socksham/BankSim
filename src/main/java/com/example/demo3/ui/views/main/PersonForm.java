@@ -25,7 +25,8 @@ public class PersonForm extends FormLayout {
     TextField age = new TextField("Age");
     ComboBox<Person.Status> status = new ComboBox<>("Status");
 
-    Button accept = new Button("Save");
+    Button accept = new Button("Accept");
+    Button reject = new Button("Reject");
     Button close = new Button("Cancel");
 
     Binder<Person> binder = new BeanValidationBinder<>(Person.class);
@@ -59,23 +60,34 @@ public class PersonForm extends FormLayout {
 
     private Component createButtonsLayout() {
         accept.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        reject.addThemeVariants(ButtonVariant.LUMO_ERROR);
         close.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
 
         accept.addClickShortcut(Key.ENTER);
         close.addClickShortcut(Key.ESCAPE);
 
         accept.addClickListener(click -> validateAndAccept());
+        reject.addClickListener(click -> validateAndReject());
         close.addClickListener(click -> fireEvent(new CloseEvent(this)));
 
         binder.addStatusChangeListener(evt -> accept.setEnabled(binder.isValid()));
 
-        return new HorizontalLayout(accept, close);
+        return new HorizontalLayout(accept, reject, close);
     }
 
     private void validateAndAccept() {
         try {
             binder.writeBean(person);
             fireEvent(new AcceptEvent(this, person));
+        } catch (ValidationException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void validateAndReject() {
+        try {
+            binder.writeBean(person);
+            fireEvent(new RejectEvent(this, person));
         } catch (ValidationException e) {
             e.printStackTrace();
         }
