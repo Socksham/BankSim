@@ -1,4 +1,4 @@
-package com.example.demo3.ui.views.main;
+package com.example.demo3.ui.views.main.home;
 
 import com.example.demo3.appuser.AppUser;
 import com.example.demo3.appuser.AppUserService;

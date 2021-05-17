@@ -1,6 +1,7 @@
 package com.example.demo3.appuser;
 
 import com.example.demo3.bank.Bank;
+import com.example.demo3.bank.BankService;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

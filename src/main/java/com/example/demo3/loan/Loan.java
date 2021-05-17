@@ -1,6 +1,7 @@
 package com.example.demo3.loan;
 
 import com.example.demo3.appuser.AppUser;
+import com.example.demo3.bank.Bank;
 import com.example.demo3.person.Person;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,11 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class Loan extends AbstractEntity {
+
+    public enum Status {
+        ACCEPTED, REJECTED, PENDING
+    }
+
     @SequenceGenerator(
             name="loan_sequence",
             sequenceName = "loan_sequence",
@@ -25,15 +31,20 @@ public class Loan extends AbstractEntity {
             generator = "loan_sequence"
     )
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
+    private Bank bank;
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Person person;
     private double amountOfLoan;
     @Enumerated(EnumType.STRING)
-    private LoanRole loanRole;
+    private Status loanRole;
+    private int yearsToPay;
 
-    public Loan(AppUser user, Person person, double amountOfLoan, LoanRole loanRole){
+    public Loan(Person person, double amountOfLoan, Bank bank, int yearsToPay){
         this.person = person;
         this.amountOfLoan = amountOfLoan;
-        this.loanRole = loanRole;
+        this.bank = bank;
+        this.loanRole = Status.PENDING;
+        this.yearsToPay = yearsToPay;
     }
 }

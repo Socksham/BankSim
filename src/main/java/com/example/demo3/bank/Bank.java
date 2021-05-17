@@ -2,6 +2,7 @@ package com.example.demo3.bank;
 
 import com.example.demo3.AbstractEntity;
 import com.example.demo3.appuser.AppUser;
+import com.example.demo3.loan.Loan;
 import com.example.demo3.person.Person;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,6 +32,8 @@ public class Bank extends AbstractEntity {
     private AppUser user;
     @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Person> persons = new LinkedList<>();
+    @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Loan> loans = new LinkedList<>();
     private double money;
 
     public Bank(AppUser user, double money){

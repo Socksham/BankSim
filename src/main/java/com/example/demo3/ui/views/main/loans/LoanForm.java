@@ -1,6 +1,6 @@
-package com.example.demo3.ui.views.main;
+package com.example.demo3.ui.views.main.loans;
 
-import com.example.demo3.person.Person;
+import com.example.demo3.loan.Loan;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -10,51 +10,37 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.data.binder.ValidationException;
-import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.shared.Registration;
 
-public class PersonForm extends FormLayout {
-    TextField firstName = new TextField("First name");
-    TextField lastName = new TextField("Last name");
-    TextField creditScore = new TextField("Credit Score");
-    TextField age = new TextField("Age");
-    ComboBox<Person.Status> status = new ComboBox<>("Status");
+public class LoanForm extends FormLayout {
+    TextField amountOfLoan = new TextField("Loan Amount");
+    ComboBox<Loan.Status> status = new ComboBox<>("Status");
 
     Button accept = new Button("Accept");
     Button reject = new Button("Reject");
     Button close = new Button("Cancel");
 
-    Binder<Person> binder = new BeanValidationBinder<>(Person.class);
-    private Person person;
+    Binder<Loan> binder = new BeanValidationBinder<>(Loan.class);
+    private Loan loan;
 
-    public PersonForm(){
+    public LoanForm(){
         addClassName("contact-form");
-        binder.forField( creditScore )
+        binder.forField( amountOfLoan )
                 .withNullRepresentation( "" )
                 .withConverter(
-                        new StringToIntegerConverter( Integer.valueOf( 0 ), "integers only" ) )
-                .bind( Person::getCreditScore, Person::setCreditScore );
-        binder.forField( age )
-                .withNullRepresentation( "" )
-                .withConverter(
-                        new StringToIntegerConverter( Integer.valueOf( 0 ), "integers only" ) )
-                .bind( Person::getAge, Person::setAge );
+                        new StringToDoubleConverter( Double.valueOf( 0 ), "doubles only" ) )
+                .bind( Loan::getAmountOfLoan, Loan::setAmountOfLoan );
         binder.bindInstanceFields(this);
-        status.setItems(Person.Status.values());
-//        company.setItems(companies);
-//        company.setItemLabelGenerator(Company::getName);
+        status.setItems(Loan.Status.values());
         add(
-            firstName,
-            lastName,
-            creditScore,
-            age,
-            status,
-            createButtonsLayout()
+                amountOfLoan,
+                status,
+                createButtonsLayout()
         );
     }
 
@@ -68,7 +54,7 @@ public class PersonForm extends FormLayout {
 
         accept.addClickListener(click -> validateAndAccept());
         reject.addClickListener(click -> validateAndReject());
-        close.addClickListener(click -> fireEvent(new CloseEvent(this)));
+        close.addClickListener(click -> fireEvent(new LoanForm.CloseEvent(this)));
 
         binder.addStatusChangeListener(evt -> accept.setEnabled(binder.isValid()));
 
@@ -77,8 +63,8 @@ public class PersonForm extends FormLayout {
 
     private void validateAndAccept() {
         try {
-            binder.writeBean(person);
-            fireEvent(new AcceptEvent(this, person));
+            binder.writeBean(loan);
+            fireEvent(new LoanForm.AcceptEvent(this, loan));
         } catch (ValidationException e) {
             e.printStackTrace();
         }
@@ -86,46 +72,41 @@ public class PersonForm extends FormLayout {
 
     private void validateAndReject() {
         try {
-            binder.writeBean(person);
-            fireEvent(new RejectEvent(this, person));
+            binder.writeBean(loan);
+            fireEvent(new LoanForm.RejectEvent(this, loan));
         } catch (ValidationException e) {
             e.printStackTrace();
         }
     }
 
-    public void setContact(Person contact) {
-        this.person = contact;
-        binder.readBean(contact);
-    }
+    public static abstract class LoanFormEvent extends ComponentEvent<LoanForm> {
+        private Loan contact;
 
-    public static abstract class PersonFormEvent extends ComponentEvent<PersonForm> {
-        private Person contact;
-
-        protected PersonFormEvent(PersonForm source, Person contact) {
+        protected LoanFormEvent(LoanForm source, Loan contact) {
             super(source, false);
             this.contact = contact;
         }
 
-        public Person getContact() {
+        public Loan getContact() {
             return contact;
         }
     }
 
-    public static class AcceptEvent extends PersonFormEvent {
-        AcceptEvent(PersonForm source, Person contact) {
+    public static class AcceptEvent extends LoanForm.LoanFormEvent {
+        AcceptEvent(LoanForm source, Loan contact) {
             super(source, contact);
         }
     }
 
-    public static class RejectEvent extends PersonFormEvent {
-        RejectEvent(PersonForm source, Person contact) {
+    public static class RejectEvent extends LoanForm.LoanFormEvent {
+        RejectEvent(LoanForm source, Loan contact) {
             super(source, contact);
         }
-
     }
 
-    public static class CloseEvent extends PersonFormEvent {
-        CloseEvent(PersonForm source) {
+
+    public static class CloseEvent extends LoanForm.LoanFormEvent {
+        CloseEvent(LoanForm source) {
             super(source, null);
         }
     }
@@ -133,5 +114,10 @@ public class PersonForm extends FormLayout {
     public <T extends ComponentEvent<?>> Registration addListener(Class<T> eventType,
                                                                   ComponentEventListener<T> listener) {
         return getEventBus().addListener(eventType, listener);
+    }
+
+    public void setContact(Loan contact) {
+        this.loan = contact;
+        binder.readBean(loan);
     }
 }

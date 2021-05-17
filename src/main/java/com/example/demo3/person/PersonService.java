@@ -25,12 +25,16 @@ public class PersonService {
         this.personRepository.save(person);
     }
 
-    public List<Person> findAll(Bank bank){
-        return this.personRepository.search(bank);
+    public List<Person> findAllPending(Bank bank, Person.Status s){
+        return this.personRepository.searchPending(bank, s);
     }
 
-    public List<Person> findAllAccepted(Bank bank){
-        return this.personRepository.searchAccepted(bank);
+    public List<Person> findAllAccepted(Bank bank, Person.Status s){
+        return this.personRepository.searchAccepted(bank, s);
+    }
+
+    public List<Person> findAllRejected(Bank bank, Person.Status s){
+        return this.personRepository.searchRejected(bank, s);
     }
 
     public List<Person> findAll(String name){
