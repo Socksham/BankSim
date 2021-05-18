@@ -58,7 +58,7 @@ public class AcceptedLoansView extends Template {
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("person.firstName", "person.creditScore", "person.age", "amountOfLoan", "loanRole");
+        grid.setColumns("person.firstName", "person.creditScore", "person.age", "amountOfLoan", "yearsToPay", "loanRole");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 

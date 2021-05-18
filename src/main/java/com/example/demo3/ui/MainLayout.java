@@ -28,6 +28,8 @@ import java.util.TimerTask;
 
 import static com.example.demo3.ui.views.main.Template.bankState;
 import static com.example.demo3.ui.views.main.Template.timer;
+import static com.example.demo3.ui.views.main.Template.bankNum;
+
 
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
@@ -35,62 +37,32 @@ public class MainLayout extends AppLayout {
     PersonService personService;
     LoanService loanService;
     Button openBank = new Button("Open Bank");
+    Button refresh = new Button("Refresh");
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String[] firsts = {"Liam",
-            "Noah",
-            "Oliver",
-            "Elijah",
-            "William",
-            "James",
-            "Benjamin",
-            "Lucas",
-            "Henry",
-            "Alexander",
-            "Mason",
-            "Michael",
-            "Ethan",
-            "Daniel",
-            "Jacob",
-            "Logan",
-            "Jackson",
-            "Levi",
-            "Sebastian",
-            "Mateo",
-            "Jack",
-            "Owen",
-            "Theodore",
-            "Aiden",
-            "Samuel",
-            "Joseph",
-            "John",
-            "David",
-            "Wyatt",
-            "Matthew",
-            "Luke",
-            "Asher",
-            "Carter",
-            "Julian"};
-    String[] lasts = {"Smith",
-            "Johnson",
-            "Williams",
-            "Brown",
-            "Jones",
-            "Garcia",
-            "Miller",
-            "Davis"};
+    String[] firsts = {"Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry","Alexander",
+            "Mason", "Michael", "Ethan", "Daniel", "Jacob", "Logan", "Jackson", "Levi", "Sebastian", "Mateo", "Jack",
+            "Owen", "Theodore", "Aiden", "Samuel", "Joseph", "John", "David", "Wyatt", "Matthew", "Luke", "Asher",
+            "Carter", "Julian"};
+    String[] lasts = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"};
 
     class addPerson extends TimerTask {
         public void run() {
             int n = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size();
             Random rand = new Random();
             List<Person> m = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
+
             personService.save(new Person(appUser.getBank(), firsts[(rand.nextInt(firsts.length))], lasts[(rand.nextInt(lasts.length))], (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18));
             if(n > 0){
                 Person p = m.get(rand.nextInt(m.size()));
                 Loan loan = new Loan(p, 1000.0 + (100000.0 - 1000.0) * rand.nextDouble(), appUser.getBank(), 3 + (30 - 3) * rand.nextInt());
                 loanService.save(loan);
+            }
+            List<Loan> loansAccepted = loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED);
+            for(Loan loan : loansAccepted){
+                appUser.getBank().setMoney(appUser.getBank().getMoney() + loan.getMonthlyPayment());
+                loan.setMonthsToPay(loan.getMonthsToPay() - 1);
             }
             System.out.println(personService.findAllPending(appUser.getBank(), Person.Status.PENDING));
         }
@@ -107,14 +79,19 @@ public class MainLayout extends AppLayout {
         }else{
             createHeaderNotLoggedIn();
         }
-        openBank.addClickListener(click -> {
-            changeState();
+        refresh.addClickListener(click -> {
+            resetNum();
         });
+        openBank.addClickListener(click -> changeState());
         if(bankState){
             openBank.setText("Close Bank");
         }else{
             openBank.setText("Open Bank");
         }
+    }
+
+    private void resetNum(){
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
     }
 
     private void changeState(){
@@ -148,10 +125,11 @@ public class MainLayout extends AppLayout {
     private void createHeaderLoggedIn() {
         H1 logo = new H1(this.username);
         logo.addClassName("logo");
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
 
         Anchor logout = new Anchor("/logout", "Log out");
 
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, openBank, logout);
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, bankNum, refresh, openBank, logout);
         header.addClassName("header");
         header.setWidth("100%");
         header.expand(logo);
@@ -169,4 +147,6 @@ public class MainLayout extends AppLayout {
                 new RouterLink("Accepted Loans", AcceptedLoansView.class)
         ));
     }
+
+
 }

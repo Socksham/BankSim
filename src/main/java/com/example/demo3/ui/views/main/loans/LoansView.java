@@ -70,6 +70,8 @@ public class LoansView extends Template {
         loanService.save(evt.getContact());
         updateList();
         closeEditor();
+        appUser.getBank().setMoney(appUser.getBank().getMoney() - evt.getContact().getAmountOfLoan());
+        resetNum();
     }
     private void saveLoanReject(LoanForm.RejectEvent evt) {
         evt.getContact().setLoanRole(Loan.Status.REJECTED);
@@ -81,7 +83,7 @@ public class LoansView extends Template {
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("person.firstName", "person.creditScore", "person.age", "amountOfLoan", "loanRole");
+        grid.setColumns("person.firstName", "person.creditScore", "person.age", "amountOfLoan", "yearsToPay","loanRole");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
 
@@ -103,6 +105,11 @@ public class LoansView extends Template {
         updateList();
         removeClassName("editing");
     }
+
+    private void resetNum(){
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
+    }
+
 
     private void updateList() {
         grid.setItems(loanService.findAllPending(appUser.getBank(), Loan.Status.PENDING));

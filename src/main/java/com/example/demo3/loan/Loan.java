@@ -38,13 +38,27 @@ public class Loan extends AbstractEntity {
     private double amountOfLoan;
     @Enumerated(EnumType.STRING)
     private Status loanRole;
-    private int yearsToPay;
+    private int monthsToPay;
+    private double loanRate;
+    private double monthlyPayment;
+    private double interest;
 
-    public Loan(Person person, double amountOfLoan, Bank bank, int yearsToPay){
+    public Loan(Person person, double amountOfLoan, Bank bank, int monthsToPay){
         this.person = person;
         this.amountOfLoan = amountOfLoan;
         this.bank = bank;
         this.loanRole = Status.PENDING;
-        this.yearsToPay = yearsToPay;
+        this.monthsToPay = monthsToPay;
+        if(person.getCreditScore() < 630){
+            this.loanRate = bank.getScoreUnder630();
+        }else if(person.getCreditScore() < 690){
+            this.loanRate = bank.getScoreUnder690();
+        }else if(person.getCreditScore() < 720){
+            this.loanRate = bank.getScoreUnder720();
+        }else{
+            this.loanRate = bank.getScoreUnder850();
+        }
+        this.monthlyPayment = this.amountOfLoan * (this.loanRate * (1 + this.loanRate) * (monthsToPay)) / ((1 + this.loanRate) * monthsToPay - 1);
+        this.interest = (this.loanRate / monthsToPay) * (this.amountOfLoan);
     }
 }

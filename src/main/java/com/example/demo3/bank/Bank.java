@@ -34,6 +34,10 @@ public class Bank extends AbstractEntity {
     private List<Person> persons = new LinkedList<>();
     @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Loan> loans = new LinkedList<>();
+    private double scoreUnder630 = 8.5;
+    private double scoreUnder690 = 7.4;
+    private double scoreUnder720 = 6.6;
+    private double scoreUnder850 = 4.5;
     private double money;
 
     public Bank(AppUser user, double money){
