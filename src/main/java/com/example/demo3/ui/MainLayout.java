@@ -1,5 +1,8 @@
 package com.example.demo3.ui;
 
+import com.example.demo3.accounts.checkingaccount.CreditAccount;
+import com.example.demo3.accounts.investingaccount.InvestingAccount;
+import com.example.demo3.accounts.savingsaccount.SavingsAccount;
 import com.example.demo3.appuser.AppUser;
 import com.example.demo3.loan.Loan;
 import com.example.demo3.loan.LoanService;
@@ -26,8 +29,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.example.demo3.ui.views.main.Template.bankState;
-import static com.example.demo3.ui.views.main.Template.timer;
+import static com.example.demo3.ui.views.main.Template.*;
+
 
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
@@ -35,64 +38,185 @@ public class MainLayout extends AppLayout {
     PersonService personService;
     LoanService loanService;
     Button openBank = new Button("Open Bank");
+    Button refresh = new Button("Refresh");
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    String[] firsts = {"Liam",
-            "Noah",
-            "Oliver",
-            "Elijah",
-            "William",
-            "James",
-            "Benjamin",
-            "Lucas",
-            "Henry",
-            "Alexander",
-            "Mason",
-            "Michael",
-            "Ethan",
-            "Daniel",
-            "Jacob",
-            "Logan",
-            "Jackson",
-            "Levi",
-            "Sebastian",
-            "Mateo",
-            "Jack",
-            "Owen",
-            "Theodore",
-            "Aiden",
-            "Samuel",
-            "Joseph",
-            "John",
-            "David",
-            "Wyatt",
-            "Matthew",
-            "Luke",
-            "Asher",
-            "Carter",
-            "Julian"};
-    String[] lasts = {"Smith",
-            "Johnson",
-            "Williams",
-            "Brown",
-            "Jones",
-            "Garcia",
-            "Miller",
-            "Davis"};
+    String[] firsts = {"Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry","Alexander",
+            "Mason", "Michael", "Ethan", "Daniel", "Jacob", "Logan", "Jackson", "Levi", "Sebastian", "Mateo", "Jack",
+            "Owen", "Theodore", "Aiden", "Samuel", "Joseph", "John", "David", "Wyatt", "Matthew", "Luke", "Asher",
+            "Carter", "Julian"};
+    String[] lasts = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"};
 
-    class addPerson extends TimerTask {
+    public class addPerson extends TimerTask {
+
         public void run() {
-            int n = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size();
+            CreditAccount creditAccount;
+            SavingsAccount savingsAccount;
+            InvestingAccount investingAccount = null;
             Random rand = new Random();
-            List<Person> m = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
-            personService.save(new Person(appUser.getBank(), firsts[(rand.nextInt(firsts.length))], lasts[(rand.nextInt(lasts.length))], (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18));
+            System.out.println(appUser);
+            Person personToAdd = new Person(appUser.getBank(), firsts[(rand.nextInt(firsts.length))], lasts[(rand.nextInt(lasts.length))],
+                    (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18);
+
+            if(personToAdd.getAge() < 30){
+                if(personToAdd.getCreditScore() < 630){
+                    creditAccount = new CreditAccount(personToAdd, 500.0 + (1000.0 - 500.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 5000.0 + (10000.0 - 5000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 690){
+                    creditAccount = new CreditAccount(personToAdd, 700.0 + (1200.0 - 700.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 7000.0 + (12000.0 - 7000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 720){
+                    creditAccount = new CreditAccount(personToAdd, 900.0 + (1400.0 - 900.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 9000.0 + (14000.0 - 9000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else{
+                    creditAccount = new CreditAccount(personToAdd, 1200.0 + (1600.0 - 1200.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 12000.0 + (16000.0 - 12000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }
+            }else if(personToAdd.getAge() < 45){
+                if(personToAdd.getCreditScore() < 630){
+                    creditAccount = new CreditAccount(personToAdd, 500.0 + (1000.0 - 500.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 5000.0 + (10000.0 - 5000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 690){
+                    creditAccount = new CreditAccount(personToAdd, 900.0 + (1200.0 - 900.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 9000.0 + (12000.0 - 9000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 720){
+                    creditAccount = new CreditAccount(personToAdd, 2400.0 + (3500.0 - 2400.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 24000.0 + (35000.0 - 24000.0) * rand.nextDouble());
+                    investingAccount = new InvestingAccount(personToAdd, 12000.0 + (16000.0 - 12000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                    investingAccount.setAmountOfMoney(myRound(investingAccount.getAmountOfMoney(), 2));
+                }else{
+                    creditAccount = new CreditAccount(personToAdd, 4000.0 + (5500.0 - 4000.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 40000.0 + (55000.0 - 40000.0) * rand.nextDouble());
+                    investingAccount = new InvestingAccount(personToAdd, 20000.0 + (45000.0 - 20000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                    investingAccount.setAmountOfMoney(myRound(investingAccount.getAmountOfMoney(), 2));
+                }
+            }else{
+                if(personToAdd.getCreditScore() < 630){
+                    creditAccount = new CreditAccount(personToAdd, 500.0 + (1000.0 - 500.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 5000.0 + (10000.0 - 5000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 690){
+                    creditAccount = new CreditAccount(personToAdd, 800.0 + (1100.0 - 800.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 8000.0 + (11000.0 - 8000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                }else if(personToAdd.getCreditScore() < 720){
+                    creditAccount = new CreditAccount(personToAdd, 2500.0 + (3400.0 - 2500.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 25000.0 + (34000.0 - 25000.0) * rand.nextDouble());
+                    investingAccount = new InvestingAccount(personToAdd, 13000.0 + (17000.0 - 13000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                    investingAccount.setAmountOfMoney(myRound(investingAccount.getAmountOfMoney(), 2));
+                }else{
+                    creditAccount = new CreditAccount(personToAdd, 4500.0 + (6500.0 - 4500.0) * rand.nextDouble());
+                    savingsAccount = new SavingsAccount(personToAdd, 45000.0 + (65000.0 - 45000.0) * rand.nextDouble());
+                    investingAccount = new InvestingAccount(personToAdd, 23000.0 + (50000.0 - 23000.0) * rand.nextDouble());
+                    creditAccount.setAmountOfMoney(myRound(creditAccount.getAmountOfMoney(), 2));
+                    savingsAccount.setAmountOfMoney(myRound(savingsAccount.getAmountOfMoney(), 2));
+                    investingAccount.setAmountOfMoney(myRound(investingAccount.getAmountOfMoney(), 2));
+                }
+            }
+            personToAdd.setCreditAccount(creditAccount);
+            personToAdd.setSavingsAccount(savingsAccount);
+            if(null != investingAccount){
+                personToAdd.setInvestingAccount(investingAccount);
+            }
+
+            int n = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size();
+            List<Person> peopleAccepted = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
+
+            personService.save(personToAdd);
             if(n > 0){
-                Person p = m.get(rand.nextInt(m.size()));
-                Loan loan = new Loan(p, 1000.0 + (100000.0 - 1000.0) * rand.nextDouble(), appUser.getBank(), 3 + (30 - 3) * rand.nextInt());
+                Person p = peopleAccepted.get(rand.nextInt(peopleAccepted.size()));
+                Loan loan = new Loan(p, myRound(1000.0 + (100000.0 - 1000.0) * rand.nextDouble(), 2), appUser.getBank(), (int)(Math.random() * ((30 - 3) + 1))+3);
                 loanService.save(loan);
             }
-            System.out.println(personService.findAllPending(appUser.getBank(), Person.Status.PENDING));
+            List<Loan> loansAccepted = loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED);
+            for(Loan loan : loansAccepted){
+                if(loan.getPerson() != personToAdd){
+                    appUser.getBank().setMoney(myRound(appUser.getBank().getMoney() + loan.getMonthlyPayment(), 2));
+                    loan.setYearsToPay(loan.getYearsToPay() - 1);
+                }
+                if(loan.getYearsToPay() <= 0){
+                    loan.setLoanRole(Loan.Status.PAID);
+                }
+            }
+
+            for(Person person : peopleAccepted){
+                if(person != personToAdd){
+                    if(person.getCreditScore() < 630){
+                        if(rand.nextInt(2) == 1) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 288.0);
+                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 40.0 + (300.0 - 40.0) * rand.nextDouble(), 2));
+                            if(person.getCreditAccount().getAmountOfMoney() < 0){
+                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                            }
+                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
+                                person.setStatus(Person.Status.BANKRUPT);
+                            }
+                        }
+                    }else if(person.getCreditScore() < 690){
+                        if(rand.nextInt(2) == 1) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 328.0);
+                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 300.0 + (600.0 - 300.0) * rand.nextDouble(), 2));
+                            if(person.getCreditAccount().getAmountOfMoney() < 0){
+                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                            }
+                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
+                                person.setStatus(Person.Status.BANKRUPT);
+                            }
+                        }
+                    }else if(person.getCreditScore() < 720){
+                        if(rand.nextInt(2) == 1) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 358.0);
+                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 358.0 + (650.0 - 358.0) * rand.nextDouble(), 2));
+                            if(person.getCreditAccount().getAmountOfMoney() < 0){
+                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                            }
+                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
+                                person.setStatus(Person.Status.BANKRUPT);
+                            }
+                        }
+                    }else{
+                        if(rand.nextInt(2) == 1) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 428.0);
+                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 500.0 + (700.0 - 500.0) * rand.nextDouble(), 2));
+                            if(person.getCreditAccount().getAmountOfMoney() < 0){
+                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                            }
+                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
+                                person.setStatus(Person.Status.BANKRUPT);
+                            }
+                        }
+                    }
+                }
+                appUser.getBank().setMoney(appUser.getBank().getMoney() + person.getCreditAccount().getAmountOfMoney() + person.getSavingsAccount().getAmountOfMoney());
+            }
+            System.out.println("TIMER");
+        }
+        private double myRound(double numToRound, int placeValue){
+            numToRound = numToRound*(Math.pow(10,placeValue));
+            numToRound = Math.round(numToRound);
+            numToRound = numToRound/(Math.pow(10,placeValue));
+            return numToRound;
         }
     }
 
@@ -107,14 +231,19 @@ public class MainLayout extends AppLayout {
         }else{
             createHeaderNotLoggedIn();
         }
-        openBank.addClickListener(click -> {
-            changeState();
+        refresh.addClickListener(click -> {
+            resetNum();
         });
+        openBank.addClickListener(click -> changeState());
         if(bankState){
             openBank.setText("Close Bank");
         }else{
             openBank.setText("Open Bank");
         }
+    }
+
+    private void resetNum(){
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
     }
 
     private void changeState(){
@@ -148,10 +277,12 @@ public class MainLayout extends AppLayout {
     private void createHeaderLoggedIn() {
         H1 logo = new H1(this.username);
         logo.addClassName("logo");
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
+        bankNum.addClassName("logo");
 
         Anchor logout = new Anchor("/logout", "Log out");
 
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, openBank, logout);
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, bankNum, openBank, refresh, logout);
         header.addClassName("header");
         header.setWidth("100%");
         header.expand(logo);
@@ -169,4 +300,6 @@ public class MainLayout extends AppLayout {
                 new RouterLink("Accepted Loans", AcceptedLoansView.class)
         ));
     }
+
+
 }

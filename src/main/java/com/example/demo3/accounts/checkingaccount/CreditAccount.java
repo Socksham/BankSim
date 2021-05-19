@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Getter
 @Setter
-public class CheckingAccount extends AbstractEntity {
+public class CreditAccount extends AbstractEntity {
     @SequenceGenerator(
             name="checking_sequence",
             sequenceName = "checking_sequence",
@@ -29,7 +29,7 @@ public class CheckingAccount extends AbstractEntity {
     private Person person;
     private double amountOfMoney;
 
-    public CheckingAccount(Person person, double amountOfMoney){
+    public CreditAccount(Person person, double amountOfMoney){
         this.person = person;
         this.amountOfMoney = amountOfMoney;
     }

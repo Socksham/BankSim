@@ -6,6 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 @Transactional(readOnly = true)
-public interface CheckingAccountRepository extends JpaRepository<CheckingAccount, Long> {
+public interface CreditAccountRepository extends JpaRepository<CreditAccount, Long> {
 
 }

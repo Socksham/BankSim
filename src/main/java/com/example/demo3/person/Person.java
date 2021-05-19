@@ -1,9 +1,8 @@
 package com.example.demo3.person;
 
-import com.example.demo3.accounts.checkingaccount.CheckingAccount;
+import com.example.demo3.accounts.checkingaccount.CreditAccount;
 import com.example.demo3.accounts.investingaccount.InvestingAccount;
 import com.example.demo3.accounts.savingsaccount.SavingsAccount;
-import com.example.demo3.appuser.AppUser;
 import com.example.demo3.bank.Bank;
 import com.example.demo3.loan.Loan;
 import lombok.Getter;
@@ -22,7 +21,7 @@ import java.util.List;
 public class Person extends AbstractEntity implements Cloneable {
 
     public enum Status {
-        ACCEPTED, REJECTED, PENDING
+        ACCEPTED, REJECTED, PENDING, BANKRUPT
     }
 
     @SequenceGenerator(
@@ -42,7 +41,7 @@ public class Person extends AbstractEntity implements Cloneable {
     @OneToMany(mappedBy = "person", fetch = FetchType.EAGER)
     private List<Loan> loans = new LinkedList<>();
     @OneToOne(cascade = CascadeType.ALL)
-    private CheckingAccount checkingAccount;
+    private CreditAccount creditAccount;
     @OneToOne(cascade = CascadeType.ALL)
     private SavingsAccount savingsAccount;
     @OneToOne(cascade = CascadeType.ALL)
@@ -55,14 +54,14 @@ public class Person extends AbstractEntity implements Cloneable {
 
     public Person(Bank bank, String firstName,
                   String lastName, int creditScore,
-                  int age, CheckingAccount checkingAccount,
+                  int age, CreditAccount creditAccount,
                   SavingsAccount savingsAccount, InvestingAccount investingAccount){
         this.bank = bank;
         this.firstName = firstName;
         this.lastName = lastName;
         this.creditScore = creditScore;
         this.age = age;
-        this.checkingAccount = checkingAccount;
+        this.creditAccount = creditAccount;
         this.savingsAccount = savingsAccount;
         this.investingAccount = investingAccount;
         this.status = Status.PENDING;
