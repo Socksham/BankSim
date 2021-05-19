@@ -1,4 +1,4 @@
-package com.example.demo3.ui;
+package com.example.demo3.ui.views.main.advertisement;
 
 import com.example.demo3.accounts.checkingaccount.CreditAccount;
 import com.example.demo3.accounts.investingaccount.InvestingAccount;
@@ -8,41 +8,46 @@ import com.example.demo3.loan.Loan;
 import com.example.demo3.loan.LoanService;
 import com.example.demo3.person.Person;
 import com.example.demo3.person.PersonService;
-import com.example.demo3.ui.views.main.advertisement.AdvertisementView;
-import com.example.demo3.ui.views.main.customers.AcceptedCustomersView;
-import com.example.demo3.ui.views.main.customers.CustomersView;
-import com.example.demo3.ui.views.main.loans.AcceptedLoansView;
-import com.example.demo3.ui.views.main.loans.LoansView;
-import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.example.demo3.ui.MainLayout;
+import com.example.demo3.ui.views.main.Template;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.RouterLink;
+import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.Route;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static com.example.demo3.ui.views.main.Template.*;
-
-
-@CssImport("./styles/shared-styles.css")
-public class MainLayout extends AppLayout {
-
+@Component
+@Scope("prototype")
+@Route(value = "/advertisement", layout = MainLayout.class)
+@PageTitle("Bank | Advertisement")
+public class AdvertisementView extends Template {
     PersonService personService;
     LoanService loanService;
-    Button openBank = new Button("Open Bank");
-    Button refresh = new Button("Refresh");
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    Button buyTvAd = new Button("Buy");
+    Button buyRadioAd = new Button("Buy");
+    Button buyBillboardAd = new Button("Buy");
+    Button buyNewspaperAd = new Button("Buy");
+
+    Div billBoardAd;
+    Div tvAd;
+    Div newsPaperAd;
+    Div radioAd;
+
+
+
     String[] firsts = {"Liam", "Noah", "Oliver", "Elijah", "William", "James", "Benjamin", "Lucas", "Henry","Alexander",
             "Mason", "Michael", "Ethan", "Daniel", "Jacob", "Logan", "Jackson", "Levi", "Sebastian", "Mateo", "Jack",
             "Owen", "Theodore", "Aiden", "Samuel", "Joseph", "John", "David", "Wyatt", "Matthew", "Luke", "Asher",
@@ -221,87 +226,105 @@ public class MainLayout extends AppLayout {
         }
     }
 
-    public MainLayout(PersonService personService, LoanService loanService) {
-        this.personService = personService;
+    public AdvertisementView(PersonService personService, LoanService loanService){
         this.loanService = loanService;
-        if (principal instanceof AppUser) {
-            this.appUser = ((AppUser)principal);
-            this.username = ((AppUser)principal).getUsername();
-            createHeaderLoggedIn();
-            createDrawerLoggedIn();
-        }else{
-            createHeaderNotLoggedIn();
+        this.personService = personService;
+
+        if(principal instanceof AppUser){
+            this.appUser = ((AppUser) principal);
+            this.username = appUser.getUsername();
         }
-        refresh.addClickListener(click -> {
-            resetNum();
-        });
-        openBank.addClickListener(click -> changeState());
-        if(bankState){
-            openBank.setText("Close Bank");
-        }else{
-            openBank.setText("Open Bank");
-        }
+
+        buyBillboardAd.addClickListener(buttonClickEvent -> buyBillboardAd());
+        billBoardAd = new Div(new Label("Billboard Ad"), new Label("Price: $100000"), buyBillboardAd);
+        billBoardAd.addClassName("ad");
+
+        buyNewspaperAd.addClickListener(buttonClickEvent -> buyNewspaperAd());
+        newsPaperAd = new Div(new Label("Newspaper Ad"), new Label("Price: $100000"), buyNewspaperAd);
+        newsPaperAd.addClassName("ad");
+
+        buyRadioAd.addClickListener(buttonClickEvent -> buyRadioAd());
+        radioAd = new Div(new Label("Radio Ad"), new Label("Price: $100000"), buyRadioAd);
+        radioAd.addClassName("ad");
+
+        buyTvAd.addClickListener(buttonClickEvent -> buyTvAd());
+        tvAd = new Div(new Label("Tv Ad"), new Label("Price: $100000"), buyTvAd);
+        tvAd.addClassName("ad");
+
+        resetButtons();
+
+        Div content = new Div(newsPaperAd, radioAd, tvAd, billBoardAd);
+        content.setSizeFull();
+        content.addClassName("adContent");
+
+        add(content);
     }
 
-    private void resetNum(){
-        bankNum.setText("Amount: " + appUser.getBank().getMoney());
-    }
-
-    private void changeState(){
-        if(bankState){
-            bankState = false;
-            openBank.setText("Open Bank");
+    public void buyRadioAd(){
+        secondsPerCustomer = 4000;
+        if(appUser.getBank().getMoney() - 30000 > 0){
+            appUser.getBank().setMoney(appUser.getBank().getMoney() - 30000);
             timer.cancel();
             timer = new Timer();
-        }else{
-            openBank.setText("Close Bank");
-            bankState = true;
-            timer.schedule(new MainLayout.addPerson(), 0, 5000);
+            timer.schedule(new AdvertisementView.addPerson(), 0, secondsPerCustomer);
+            buyRadioAdButton = true;
+        }
+        resetButtons();
+    }
+
+    public void buyTvAd(){
+        secondsPerCustomer = 3000;
+        if(appUser.getBank().getMoney() - 50000 > 0){
+            appUser.getBank().setMoney(appUser.getBank().getMoney() - 50000);
+            timer.cancel();
+            timer = new Timer();
+            timer.schedule(new AdvertisementView.addPerson(), 0, secondsPerCustomer);
+            buyTvAdButton = true;
+        }
+        resetButtons();
+    }
+
+    public void buyNewspaperAd(){
+        secondsPerCustomer = 4500;
+        if(appUser.getBank().getMoney() - 10000 > 0){
+            appUser.getBank().setMoney(appUser.getBank().getMoney() - 10000);
+            timer.cancel();
+            timer = new Timer();
+            timer.schedule(new AdvertisementView.addPerson(), 0, secondsPerCustomer);
+            buyNewspaperAdButton = true;
+        }
+        resetButtons();
+    }
+
+    public void buyBillboardAd(){
+        secondsPerCustomer = 2000;
+        if(appUser.getBank().getMoney() - 100000 > 0){
+            appUser.getBank().setMoney(appUser.getBank().getMoney() - 100000);
+            timer.cancel();
+            timer = new Timer();
+            timer.schedule(new AdvertisementView.addPerson(), 0, secondsPerCustomer);
+            buyBillboardAdButton = true;
+        }
+        resetButtons();
+    }
+
+    public void resetButtons(){
+        bankState = true;
+        if(buyBillboardAdButton){
+            buyBillboardAd.setEnabled(false);
+        }
+
+        if(buyNewspaperAdButton){
+            buyNewspaperAd.setEnabled(false);
+        }
+
+        if(buyRadioAdButton){
+            buyRadioAd.setEnabled(false);
+        }
+
+        if(buyTvAdButton){
+            buyTvAd.setEnabled(false);
         }
     }
-
-    private void createHeaderNotLoggedIn() {
-        H1 logo = new H1("Bank");
-        logo.addClassName("logo");
-
-        Anchor login = new Anchor("/login", "Log in");
-        Anchor signUp = new Anchor("/register", "Register");
-        HorizontalLayout header = new HorizontalLayout(logo, login, signUp);
-        header.addClassName("header");
-        header.setWidth("100%");
-        header.expand(logo);
-        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-
-        addToNavbar(header);
-    }
-
-    private void createHeaderLoggedIn() {
-        H1 logo = new H1(this.username);
-        logo.addClassName("logo");
-        bankNum.setText("Amount: " + appUser.getBank().getMoney());
-        bankNum.addClassName("logo");
-
-        Anchor logout = new Anchor("/logout", "Log out");
-
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, bankNum, openBank, refresh, logout);
-        header.addClassName("header");
-        header.setWidth("100%");
-        header.expand(logo);
-        header.setDefaultVerticalComponentAlignment(FlexComponent.Alignment.CENTER);
-
-        addToNavbar(header);
-    }
-
-    private void createDrawerLoggedIn() {
-
-        addToDrawer(new VerticalLayout(
-                new RouterLink("Customers", CustomersView.class),
-                new RouterLink("Accepted Customers", AcceptedCustomersView.class),
-                new RouterLink("Loans", LoansView.class),
-                new RouterLink("Accepted Loans", AcceptedLoansView.class),
-                new RouterLink("Advertisement", AdvertisementView.class)
-        ));
-    }
-
-
 }
+
