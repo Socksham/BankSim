@@ -61,7 +61,7 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.appUserRole = AppUserRole.USER;
-        this.bank = new Bank(this, 100000);
+        this.bank = new Bank(this, 5000);
     }
 
     @Override

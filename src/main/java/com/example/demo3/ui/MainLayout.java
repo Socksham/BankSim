@@ -11,17 +11,20 @@ import com.example.demo3.person.PersonService;
 import com.example.demo3.ui.views.main.advertisement.AdvertisementView;
 import com.example.demo3.ui.views.main.customers.AcceptedCustomersView;
 import com.example.demo3.ui.views.main.customers.CustomersView;
+import com.example.demo3.ui.views.main.home.HomeView;
 import com.example.demo3.ui.views.main.loans.AcceptedLoansView;
 import com.example.demo3.ui.views.main.loans.LoansView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Router;
 import com.vaadin.flow.router.RouterLink;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -49,9 +52,12 @@ public class MainLayout extends AppLayout {
             "Carter", "Julian"};
     String[] lasts = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"};
 
+    int months = 0;
+
     public class addPerson extends TimerTask {
 
         public void run() {
+            months++;
             CreditAccount creditAccount;
             SavingsAccount savingsAccount;
             InvestingAccount investingAccount = null;
@@ -145,6 +151,16 @@ public class MainLayout extends AppLayout {
             List<Person> peopleAccepted = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
 
             personService.save(personToAdd);
+
+            if(months%12 == 0){
+                for(Person p : peopleAccepted){
+                    p.setAge(p.getAge() + 1);
+                    if(p.getAge() > 75){
+                        p.setStatus(Person.Status.BANKRUPT);
+                    }
+                    personService.save(p);
+                }
+            }
             if(n > 0){
                 Person p = peopleAccepted.get(rand.nextInt(peopleAccepted.size()));
                 Loan loan = new Loan(p, myRound(1000.0 + (100000.0 - 1000.0) * rand.nextDouble(), 2), appUser.getBank(), (int)(Math.random() * ((30 - 3) + 1))+3);
@@ -153,8 +169,10 @@ public class MainLayout extends AppLayout {
             List<Loan> loansAccepted = loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED);
             for(Loan loan : loansAccepted){
                 if(loan.getPerson() != personToAdd){
-                    appUser.getBank().setMoney(myRound(appUser.getBank().getMoney() + loan.getMonthlyPayment(), 2));
-                    loan.setYearsToPay(loan.getYearsToPay() - 1);
+                    if(loan.getPerson().getLoans().size() < 3){
+                        appUser.getBank().setMoney(myRound(appUser.getBank().getMoney() + loan.getMonthlyPayment(), 2));
+                        loan.setYearsToPay(loan.getYearsToPay() - 1);
+                    }
                 }
                 if(loan.getYearsToPay() <= 0){
                     loan.setLoanRole(Loan.Status.PAID);
@@ -235,16 +253,18 @@ public class MainLayout extends AppLayout {
         refresh.addClickListener(click -> {
             resetNum();
         });
+
+        resetNum();
+    }
+
+    private void resetNum(){
+        bankNum.setText("Amount: " + appUser.getBank().getMoney());
         openBank.addClickListener(click -> changeState());
         if(bankState){
             openBank.setText("Close Bank");
         }else{
             openBank.setText("Open Bank");
         }
-    }
-
-    private void resetNum(){
-        bankNum.setText("Amount: " + appUser.getBank().getMoney());
     }
 
     private void changeState(){
@@ -276,6 +296,7 @@ public class MainLayout extends AppLayout {
     }
 
     private void createHeaderLoggedIn() {
+        RouterLink bankTycoon = new RouterLink("Bank Tycoon", HomeView.class);
         H1 logo = new H1(this.username);
         logo.addClassName("logo");
         bankNum.setText("Amount: " + appUser.getBank().getMoney());
@@ -283,7 +304,7 @@ public class MainLayout extends AppLayout {
 
         Anchor logout = new Anchor("/logout", "Log out");
 
-        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), logo, bankNum, openBank, refresh, logout);
+        HorizontalLayout header = new HorizontalLayout(new DrawerToggle(), bankTycoon, logo, bankNum, openBank, refresh, logout);
         header.addClassName("header");
         header.setWidth("100%");
         header.expand(logo);

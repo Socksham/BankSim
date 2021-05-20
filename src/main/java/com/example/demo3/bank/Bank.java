@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,9 +41,15 @@ public class Bank extends AbstractEntity {
     private double scoreUnder720 = 0.066;
     private double scoreUnder850 = 0.045;
     private double money;
+    private ArrayList<Double> moneyPerMonth = new ArrayList<Double>();
 
     public Bank(AppUser user, double money){
         this.user = user;
         this.money = money;
+        moneyPerMonth.add(money);
+    }
+
+    public void addToMoneyStat(Double amount){
+        moneyPerMonth.add(amount);
     }
 }
