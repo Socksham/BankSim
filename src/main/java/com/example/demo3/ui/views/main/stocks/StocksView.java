@@ -12,6 +12,8 @@ import com.example.demo3.stocktransactions.StockTransaction;
 import com.example.demo3.stocktransactions.StockTransactionService;
 import com.example.demo3.ui.MainLayout;
 import com.example.demo3.ui.views.main.Template;
+import com.sun.jdi.DoubleValue;
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
@@ -36,10 +38,7 @@ import java.net.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Component
 @Scope("prototype")
@@ -55,6 +54,7 @@ public class StocksView extends Template {
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Button refresh = new Button("Refresh");
+    Button search = new Button("Search");
     Label portfolioValue = new Label();
     InvestingAccountService investingAccountService;
 
@@ -79,13 +79,35 @@ public class StocksView extends Template {
 
         configureGrid();
 
-        refresh.addClickListener(click -> refreshAll());
+        refresh.addClickListener(click -> {
+            try {
+                refreshAll();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
+        search.addClickListener(click -> {
+            try {
+                updateList(filterText.getValue());
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
 
         Div content = new Div(grid2, form);
         content.setSizeFull();
         content.addClassName("content");
 
-        add(getToolBar(), portfolioValue, content);
+        add(getToolBar(), portfolioValue, content, refresh);
         updateList();
         closeEditor();
 
@@ -105,86 +127,39 @@ public class StocksView extends Template {
         closeEditor();
     }
 
-//    private double getPortfolioValue() throws IOException, InterruptedException, JSONException {
-//        List<String> stockNames = new LinkedList<>();
-//        List<Integer> numShares = new LinkedList<>();
-//        List<Double> allStocksPrice = new LinkedList<>();
-//        JSONObject object = new JSONObject();
-//        List<StockTransaction> transactions = stockTransactionService.findAll(appUser.getBank());
-//        for(int i = 0; i < transactions.size(); i++){
-//            if(!stockNames.contains(transactions.get(i).getStock())) {
-//                stockNames.add(transactions.get(i).getStock());
-//                numShares.add(i, numShares.get(i) + 1);
-//            }else{
-//                if(transactions.get(i).getTransactionRole() == StockTransaction.Status.BUY){
-//                    numShares.add(i, numShares.get(i) + 1);
-//                }else{
-//                    numShares.add(i, numShares.get(i) - 1);
-//                }
-//            }
-//            while (true){
-//                try {
-//                    HttpRequest request = HttpRequest.newBuilder()
-//                            .uri(URI.create("https://finnhub.io/api/v1/quote?symbol=" + transactions.get(i).getStock() + "&token=bs14jlnrh5r8enj768q0"))
-//                            .method("GET", HttpRequest.BodyPublishers.noBody())
-//                            .build();
-//                    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-//                    System.out.println(response.body());
-//                    object = new JSONObject(response.body());
-//                    break;
-//                }catch (Error | IOException | InterruptedException | JSONException r){
-//                    HttpRequest request = HttpRequest.newBuilder()
-//                            .uri(URI.create("https://finnhub.io/api/v1/quote?symbol=" + transactions.get(i).getStock() + "&token=bs14jlnrh5r8enj768q0"))
-//                            .method("GET", HttpRequest.BodyPublishers.noBody())
-//                            .build();
-//                    HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
-//                    System.out.println(response.body());
-//                    object = new JSONObject(response.body());
-//                    break;
-//                }
-//            }
-//            allStocksPrice.add(i, (Double) object.get("c"));
-//
-//        }
-//        double val = 0;
-//
-//        for(int i = 0; i < numShares.size(); i++){
-//            val += allStocksPrice.get(i) * numShares.get(i);
-//        }
-//        return val;
-//    }
-
     private double value() throws InterruptedException, IOException, JSONException {
-        System.out.println(appUser.getBank().getCashLeft());
-        double cashLeft = appUser.getBank().getCashLeft();
+        System.out.println(appUser.getBank().getInvestingAccountValue());
+        double value = appUser.getBank().getInvestingAccountValue();
         List<StockTransaction> transactions = stockTransactionService.findAll(appUser.getBank());
         for(StockTransaction transaction : transactions){
             if(transaction.getTransactionRole() == StockTransaction.Status.BUY){
-                cashLeft -= (transaction.getAmount_of_stock() * transaction.getPricePerStock());
+                value -= (transaction.getAmount_of_stock() * transaction.getPricePerStock());
             }else{
-                cashLeft += (transaction.getAmount_of_stock() * transaction.getPricePerStock());
+                value += (transaction.getAmount_of_stock() * transaction.getPricePerStock());
             }
         }
-        List<String> stockNames = new ArrayList<>();
-        List<Double> stockPrices = new ArrayList<>();
-        List<Integer> stockAmounts = new ArrayList<>();
-        for(int i = 0; i < transactions.size(); i++){
-            if(stockNames.contains((String) transactions.get(i).getStock())){
-                stockNames.add(transactions.get(i).getStock());
-                stockPrices.add(getStockPrice(transactions.get(i).getStock()));
-                stockAmounts.add(transactions.get(i).getAmount_of_stock());
-            }else{
-                if(transactions.get(i).getTransactionRole() == StockTransaction.Status.BUY){
-                    stockAmounts.set(i, stockAmounts.get(i) + transactions.get(i).getAmount_of_stock());
-                }else{
-                    stockAmounts.set(i, stockAmounts.get(i) - transactions.get(i).getAmount_of_stock());
+        System.out.println("VALUE1: " + value);
+        Hashtable<String, Integer> nameToAmount = new Hashtable<String, Integer>();
+        Hashtable<String, Double> nameToPrice = new Hashtable<String, Double>();
+        for (StockTransaction transaction : transactions) {
+            if (!nameToAmount.containsKey(transaction.getStock())) {
+                nameToAmount.put(transaction.getStock(), transaction.getAmount_of_stock());
+                nameToPrice.put(transaction.getStock(), getStockPrice(transaction.getStock()));
+            } else {
+                if (transaction.getTransactionRole() == StockTransaction.Status.BUY) {
+                    nameToAmount.replace(transaction.getStock(), nameToAmount.get(transaction.getStock()) + transaction.getAmount_of_stock());
+                } else {
+                    nameToAmount.replace(transaction.getStock(), nameToAmount.get(transaction.getStock()) - transaction.getAmount_of_stock());
                 }
             }
         }
-        for(int i = 0; i < stockNames.size(); i++){
-            cashLeft += (stockAmounts.get(i) * stockPrices.get(i));
+
+        Set<String> keys = nameToAmount.keySet();
+        for(String key : keys){
+            value += nameToAmount.get(key) * nameToPrice.get(key);
         }
-        return cashLeft;
+        System.out.println("VALUE2: " + value);
+        return value;
     }
 
     private double getStockPrice(String stock) throws JSONException, IOException, InterruptedException {
@@ -216,20 +191,13 @@ public class StocksView extends Template {
         filterText.setPlaceholder("Find stocks...");
         filterText.setClearButtonVisible(true);
         filterText.setValueChangeMode(ValueChangeMode.LAZY);
-        filterText.addValueChangeListener(e -> {
-            try {
-                updateList(filterText.getValue());
-            } catch (IOException | JSONException | InterruptedException ioException) {
-                ioException.printStackTrace();
-            }
-        });
-
-        HorizontalLayout toolbar = new HorizontalLayout(filterText);
+        HorizontalLayout toolbar = new HorizontalLayout(filterText, search);
         toolbar.addClassName("toolbar");
         return toolbar;
     }
 
-    private void refreshAll(){
+    private void refreshAll() throws InterruptedException, JSONException, IOException {
+        portfolioValue.setText("VALUE: " + value());
     }
 
     private void configureGrid(){
