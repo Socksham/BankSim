@@ -61,7 +61,11 @@ public class HomeView extends VerticalLayout {
         moneyPerMonthChart();
         loanParChart();
 
-        add(bankMoney, chart, chart3, chart2, creditScore, age, refresh);
+        Div pieCharts = new Div(chart, chart3);
+        pieCharts.addClassName("content");
+        pieCharts.setWidthFull();
+
+        add(bankMoney, pieCharts, chart2, creditScore, age, refresh);
     }
 
     private void parChart(){
@@ -69,7 +73,7 @@ public class HomeView extends VerticalLayout {
         dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));
         dataSeries.add(new DataSeriesItem("Pending", personService.findAllPending(appUser.getBank(), Person.Status.PENDING).size()));
         dataSeries.add(new DataSeriesItem("Rejected", personService.findAllRejected(appUser.getBank(), Person.Status.REJECTED).size()));
-
+        chart.setSizeFull();
         chart.getConfiguration().setSeries(dataSeries);
     }
 
@@ -78,7 +82,7 @@ public class HomeView extends VerticalLayout {
         dataSeries2.add(new DataSeriesItem("Accepted", loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED).size()));
         dataSeries2.add(new DataSeriesItem("Pending", loanService.findAllPending(appUser.getBank(), Loan.Status.PENDING).size()));
         dataSeries2.add(new DataSeriesItem("Rejected", loanService.findAllRejected(appUser.getBank(), Loan.Status.REJECTED).size()));
-
+        chart3.setSizeFull();
         chart3.getConfiguration().setSeries(dataSeries2);
     }
 

@@ -51,7 +51,7 @@ public class AppUser implements UserDetails {
         this.email = email;
         this.password = password;
         this.appUserRole = appUserRole;
-        this.bank = new Bank(this, 100000);
+        this.bank = new Bank(this, 5000);
     }
 
     public AppUser(String name, String username,

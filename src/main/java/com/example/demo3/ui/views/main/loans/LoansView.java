@@ -10,6 +10,7 @@ import com.example.demo3.ui.views.main.Template;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.context.annotation.Scope;
@@ -28,7 +29,7 @@ public class LoansView extends Template {
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Button refresh = new Button("Refresh");
-
+    Notification notification = new Notification("Not enough funds to accept loan", 3000, Notification.Position.BOTTOM_END);
     Grid<Loan> grid;
 
     public LoansView(LoanService loanService, PersonService personService){
@@ -66,11 +67,16 @@ public class LoansView extends Template {
     }
 
     private void saveLoanAccept(LoanForm.AcceptEvent evt) {
-        evt.getContact().setLoanRole(Loan.Status.ACCEPTED);
-        loanService.save(evt.getContact());
+        if(appUser.getBank().getMoney() - evt.getContact().getAmountOfLoan() > 0){
+            evt.getContact().setLoanRole(Loan.Status.ACCEPTED);
+            loanService.save(evt.getContact());
+            appUser.getBank().setMoney(appUser.getBank().getMoney() - evt.getContact().getAmountOfLoan());
+
+        }else{
+            notification.open();
+        }
         updateList();
         closeEditor();
-        appUser.getBank().setMoney(appUser.getBank().getMoney() - evt.getContact().getAmountOfLoan());
         resetNum();
     }
     private void saveLoanReject(LoanForm.RejectEvent evt) {
