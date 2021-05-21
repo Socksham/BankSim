@@ -146,6 +146,7 @@ public class MainLayout extends AppLayout {
             personToAdd.setSavingsAccount(savingsAccount);
             if(null != investingAccount){
                 personToAdd.setInvestingAccount(investingAccount);
+                appUser.getBank().setCashLeft(appUser.getBank().getCashLeft() + investingAccount.getAmountOfMoney());
             }
 
             int n = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size();

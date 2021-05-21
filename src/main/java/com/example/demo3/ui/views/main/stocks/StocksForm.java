@@ -28,11 +28,10 @@ public class StocksForm extends FormLayout {
     TextField pricePerStock = new TextField();
     TextField amountOfStock = new TextField();
 
-    Label symbol = new Label();
+    Label stockNum = new Label();
     Label open = new Label();
     Label high = new Label();
     Label low = new Label();
-    Label price = new Label();
     Label changePercent = new Label();
 
     Button buy = new Button("Buy");
@@ -52,17 +51,18 @@ public class StocksForm extends FormLayout {
 
         amountOfStock.setPlaceholder("Stock Amount...");
 
-        add(stock, pricePerStock, amountOfStock, open, high, low, changePercent, createButtonsLayout());
+        add(stock, pricePerStock, amountOfStock, open, high, low, changePercent, stockNum, createButtonsLayout());
     }
 
     public void setStock(Stock stock, String open,
-                         String high, String low, String changePercent){
+                         String high, String low, String changePercent, int stockNum){
         this.stockSet = stock;
         binder.readBean(stockSet);
         this.open.setText("Open: " + open);
         this.high.setText("High " + high);
         this.low.setText("Low: " + low);
         this.changePercent.setText("Percent Change: " + changePercent);
+        this.stockNum.setText("Amount of Stock: " + stockNum);
     }
 
     private Component createButtonsLayout() {
@@ -120,7 +120,8 @@ public class StocksForm extends FormLayout {
         }
 
         public int getAmountStock(){
-            return Integer.getInteger(amountOfStock.getValue());
+            System.out.println(amountOfStock.getValue());
+            return Integer.parseInt(amountOfStock.getValue());
         }
     }
 

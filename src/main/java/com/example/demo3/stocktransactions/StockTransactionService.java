@@ -15,8 +15,8 @@ public class StockTransactionService {
         this.stockTransactionRepository = stockTransactionRepository;
     }
 
-    public List<StockTransaction> findByName(Bank bank, String name){
-        return this.stockTransactionRepository.findByName(bank, name);
+    public List<StockTransaction> findAll(Bank bank){
+        return this.stockTransactionRepository.findByName(bank);
     }
 
     public List<StockTransaction> findByTransactionType(Bank bank, StockTransaction.Status status){

@@ -29,7 +29,7 @@ public class StockTransaction extends AbstractEntity {
             generator = "stocks_sequence"
     )
     private Long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Bank bank;
     private String stock;
     private double pricePerStock;

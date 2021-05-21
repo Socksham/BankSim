@@ -44,11 +44,15 @@ public class Bank extends AbstractEntity {
     private double scoreUnder720 = 0.066;
     private double scoreUnder850 = 0.045;
     private double money;
+    private double investingAccountValue;
+    private double cashLeft;
     private ArrayList<Double> moneyPerMonth = new ArrayList<Double>();
 
     public Bank(AppUser user, double money){
         this.user = user;
         this.money = money;
+        this.cashLeft = 0.0;
+        this.investingAccountValue = 0.0;
         moneyPerMonth.add(money);
     }
 
