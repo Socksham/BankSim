@@ -1,6 +1,7 @@
 package com.example.demo3.ui.views.main.home;
 
 import com.example.demo3.appuser.AppUser;
+import com.example.demo3.loan.Loan;
 import com.example.demo3.loan.LoanService;
 import com.example.demo3.person.Person;
 import com.example.demo3.person.PersonService;
@@ -35,6 +36,7 @@ public class HomeView extends VerticalLayout {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Chart chart = new Chart(ChartType.PIE);
     Chart chart2 = new Chart(ChartType.LINE);
+    Chart chart3 = new Chart(ChartType.PIE);
     Label creditScore = new Label();
     Label age = new Label();
     Label bankMoney = new Label();
@@ -55,18 +57,29 @@ public class HomeView extends VerticalLayout {
 
         avgAge();
         avgCreditScore();
+        parChart();
+        moneyPerMonthChart();
+        loanParChart();
 
-        add(bankMoney, parChart(), moneyPerMonthChart(), creditScore, age, refresh);
+        add(bankMoney, chart, chart3, chart2, creditScore, age, refresh);
     }
 
-    private Component parChart(){
+    private void parChart(){
         DataSeries dataSeries = new DataSeries();
         dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));
         dataSeries.add(new DataSeriesItem("Pending", personService.findAllPending(appUser.getBank(), Person.Status.PENDING).size()));
         dataSeries.add(new DataSeriesItem("Rejected", personService.findAllRejected(appUser.getBank(), Person.Status.REJECTED).size()));
 
         chart.getConfiguration().setSeries(dataSeries);
-        return chart;
+    }
+
+    private void loanParChart(){
+        DataSeries dataSeries2 = new DataSeries();
+        dataSeries2.add(new DataSeriesItem("Accepted", loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED).size()));
+        dataSeries2.add(new DataSeriesItem("Pending", loanService.findAllPending(appUser.getBank(), Loan.Status.PENDING).size()));
+        dataSeries2.add(new DataSeriesItem("Rejected", loanService.findAllRejected(appUser.getBank(), Loan.Status.REJECTED).size()));
+
+        chart3.getConfiguration().setSeries(dataSeries2);
     }
 
     private void avgCreditScore(){
@@ -93,7 +106,7 @@ public class HomeView extends VerticalLayout {
         age.setText("Average Age: " + totalAge/total);
     }
 
-    private Component moneyPerMonthChart(){
+    private void moneyPerMonthChart(){
 
         ArrayList<Double> list = appUser.getBank().getMoneyPerMonth();
         DataSeries dataSeries = new DataSeries();
@@ -101,8 +114,6 @@ public class HomeView extends VerticalLayout {
             dataSeries.add(new DataSeriesItem(i, list.get(i)));
         }
         chart2.getConfiguration().setSeries(dataSeries);
-
-        return chart2;
     }
 
     private void resetAll(){
@@ -111,6 +122,13 @@ public class HomeView extends VerticalLayout {
         dataSeries.add(new DataSeriesItem("Pending", personService.findAllPending(appUser.getBank(), Person.Status.PENDING).size()));
         dataSeries.add(new DataSeriesItem("Rejected", personService.findAllRejected(appUser.getBank(), Person.Status.REJECTED).size()));
         chart.getConfiguration().setSeries(dataSeries);
+
+        DataSeries dataSeries3 = new DataSeries();
+        dataSeries3.add(new DataSeriesItem("Accepted", loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED).size()));
+        dataSeries3.add(new DataSeriesItem("Pending", loanService.findAllPending(appUser.getBank(), Loan.Status.PENDING).size()));
+        dataSeries3.add(new DataSeriesItem("Rejected", loanService.findAllRejected(appUser.getBank(), Loan.Status.REJECTED).size()));
+
+        chart3.getConfiguration().setSeries(dataSeries3);
 
         ArrayList<Double> list = appUser.getBank().getMoneyPerMonth();
         DataSeries dataSeries2 = new DataSeries();
@@ -134,6 +152,10 @@ public class HomeView extends VerticalLayout {
         for(Person p : people){
             totalScore += p.getCreditScore();
         }
+
+        chart.drawChart(true);
+        chart2.drawChart(true);
+        chart3.drawChart(true);
 
         creditScore.setText("Average Credit Score: " + totalScore/total);
 

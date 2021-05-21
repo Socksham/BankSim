@@ -18,4 +18,7 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("SELECT c FROM Loan c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.loanRole = :accepted")
     List<Loan> searchAccepted(@Param("term") Bank term, @Param("accepted")Loan.Status accepted);
+
+    @Query("SELECT c FROM Loan c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.loanRole = :rejected")
+    List<Loan> searchRejected(@Param("term") Bank term, @Param("rejected")Loan.Status rejected);
 }

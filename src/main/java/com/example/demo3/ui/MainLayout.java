@@ -26,6 +26,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Router;
 import com.vaadin.flow.router.RouterLink;
+import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.List;
@@ -179,56 +180,55 @@ public class MainLayout extends AppLayout {
             }
 
             for(Person person : peopleAccepted){
-                if(person != personToAdd){
-                    if(person.getCreditScore() < 630){
-                        if(rand.nextInt(2) == 1) {
-                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 288.0);
-                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 40.0 + (300.0 - 40.0) * rand.nextDouble(), 2));
-                            if(person.getCreditAccount().getAmountOfMoney() < 0){
-                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
-                            }
-                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
-                                person.setStatus(Person.Status.BANKRUPT);
-                            }
+                if (!peopleAcceptedRecently.contains(person)) {
+                    System.out.println("WIGYFWOFGIYWOIGUFWEIYFGIOYGWEFYOGWUEFIUFY");
+                    appUser.getBank().setMoney(appUser.getBank().getMoney() - person.getCreditAccount().getAmountOfMoney() - person.getSavingsAccount().getAmountOfMoney());
+
+                    if (person.getCreditScore() < 630) {
+                        person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 288.0);
+                        person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 40.0 + (300.0 - 40.0) * rand.nextDouble(), 2));
+                        if (person.getCreditAccount().getAmountOfMoney() < 0) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
                         }
-                    }else if(person.getCreditScore() < 690){
-                        if(rand.nextInt(2) == 1) {
-                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 328.0);
-                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 300.0 + (600.0 - 300.0) * rand.nextDouble(), 2));
-                            if(person.getCreditAccount().getAmountOfMoney() < 0){
-                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
-                            }
-                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
-                                person.setStatus(Person.Status.BANKRUPT);
-                            }
+                        if (person.getCreditAccount().getAmountOfMoney() < 100.0) {
+                            person.setStatus(Person.Status.BANKRUPT);
                         }
-                    }else if(person.getCreditScore() < 720){
-                        if(rand.nextInt(2) == 1) {
-                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 358.0);
-                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 358.0 + (650.0 - 358.0) * rand.nextDouble(), 2));
-                            if(person.getCreditAccount().getAmountOfMoney() < 0){
-                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
-                            }
-                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
-                                person.setStatus(Person.Status.BANKRUPT);
-                            }
+                    } else if (person.getCreditScore() < 690) {
+                        person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 328.0);
+                        person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 300.0 + (600.0 - 300.0) * rand.nextDouble(), 2));
+                        if (person.getCreditAccount().getAmountOfMoney() < 0) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
                         }
-                    }else{
-                        if(rand.nextInt(2) == 1) {
-                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 428.0);
-                            person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 500.0 + (700.0 - 500.0) * rand.nextDouble(), 2));
-                            if(person.getCreditAccount().getAmountOfMoney() < 0){
-                                person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                        if (person.getCreditAccount().getAmountOfMoney() < 100.0) {
+                            person.setStatus(Person.Status.BANKRUPT);
                             }
-                            if(person.getCreditAccount().getAmountOfMoney() < 100.0){
-                                person.setStatus(Person.Status.BANKRUPT);
-                            }
+                    } else if (person.getCreditScore() < 720) {
+                        person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 358.0);
+                        person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 358.0 + (650.0 - 358.0) * rand.nextDouble(), 2));
+                        if (person.getCreditAccount().getAmountOfMoney() < 0) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                        }
+                        if (person.getCreditAccount().getAmountOfMoney() < 100.0) {
+                            person.setStatus(Person.Status.BANKRUPT);
+                        }
+                    } else {
+                        person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 428.0);
+                        person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 500.0 + (700.0 - 500.0) * rand.nextDouble(), 2));
+                        if (person.getCreditAccount().getAmountOfMoney() < 0) {
+                            person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 30.0);
+                        }
+                        if (person.getCreditAccount().getAmountOfMoney() < 100.0) {
+                            person.setStatus(Person.Status.BANKRUPT);
                         }
                     }
                 }
                 appUser.getBank().setMoney(appUser.getBank().getMoney() + person.getCreditAccount().getAmountOfMoney() + person.getSavingsAccount().getAmountOfMoney());
-                appUser.getBank().addToMoneyStat(appUser.getBank().getMoney());
+
             }
+
+            peopleAcceptedRecently.clear();
+            System.out.println("##00 " + appUser.getBank().getMoney());
+            appUser.getBank().addToMoneyStat(appUser.getBank().getMoney());
             System.out.println("TIMER");
         }
         private double myRound(double numToRound, int placeValue){
@@ -255,6 +255,7 @@ public class MainLayout extends AppLayout {
         });
 
         resetNum();
+        System.out.println("WLIUFHWEIFUHEIFOUGWEFIYGEIFYBWEIYFUBEFUYWEYIUFG");
     }
 
     private void resetNum(){

@@ -74,6 +74,7 @@ public class CustomersView extends Template {
         personService.save(evt.getContact());
         updateList();
         closeEditor();
+        peopleAcceptedRecently.add(evt.getContact());
     }
     private void saveContactReject(PersonForm.RejectEvent evt) {
         evt.getContact().setStatus(Person.Status.REJECTED);

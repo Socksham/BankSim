@@ -25,6 +25,9 @@ public class LoanService {
     public List<Loan> findAllAccepted(Bank bank, Loan.Status s){
         return this.loanRepository.searchAccepted(bank, s);
     }
+    public List<Loan> findAllRejected(Bank bank, Loan.Status s){
+        return this.loanRepository.searchRejected(bank, s);
+    }
 
     public void save(Loan person){
         if(person == null){
