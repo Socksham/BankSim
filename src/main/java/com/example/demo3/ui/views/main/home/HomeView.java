@@ -5,11 +5,6 @@ import com.example.demo3.loan.LoanService;
 import com.example.demo3.person.Person;
 import com.example.demo3.person.PersonService;
 import com.example.demo3.ui.MainLayout;
-import com.example.demo3.ui.views.main.customers.PersonForm;
-//import com.vaadin.addon.charts.Chart;
-//import com.vaadin.addon.charts.model.ChartType;
-//import com.vaadin.addon.charts.model.DataSeries;
-//import com.vaadin.addon.charts.model.DataSeriesItem;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.charts.Chart;
@@ -38,6 +33,12 @@ public class HomeView extends VerticalLayout {
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Chart chart = new Chart(ChartType.PIE);
+    Chart chart2 = new Chart(ChartType.LINE);
+    Label creditScore = new Label();
+    Label age = new Label();
+    Label bankMoney = new Label();
+
 
     public HomeView(LoanService loanService, PersonService personService){
         this.loanService = loanService;
@@ -48,14 +49,17 @@ public class HomeView extends VerticalLayout {
             System.out.println(username);
         }
 
-        Label bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
+        refresh.addClickListener(click -> resetAll());
 
-        add(bankMoney, parChart(), avgCreditScore(), avgAge(), moneyPerMonthChart(), refresh);
+        bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
+
+        avgAge();
+        avgCreditScore();
+
+        add(bankMoney, parChart(), moneyPerMonthChart(), creditScore, age, refresh);
     }
 
     private Component parChart(){
-        Chart chart = new Chart(ChartType.PIE);
-
         DataSeries dataSeries = new DataSeries();
         dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));
         dataSeries.add(new DataSeriesItem("Pending", personService.findAllPending(appUser.getBank(), Person.Status.PENDING).size()));
@@ -65,7 +69,7 @@ public class HomeView extends VerticalLayout {
         return chart;
     }
 
-    private Component avgCreditScore(){
+    private void avgCreditScore(){
         List<Person> people = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
         int total = people.size();
         double totalScore = 0.0;
@@ -74,10 +78,10 @@ public class HomeView extends VerticalLayout {
             totalScore += p.getCreditScore();
         }
 
-        return new Label("Average Credit Score: " + totalScore/total);
+        creditScore.setText("Average Credit Score: " + totalScore/total);
     }
 
-    private Component avgAge(){
+    private void avgAge(){
         List<Person> people = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
         int total = people.size();
         double totalAge = 0.0;
@@ -86,19 +90,54 @@ public class HomeView extends VerticalLayout {
             totalAge += p.getAge();
         }
 
-        return new Label("Average Age: " + totalAge/total);
+        age.setText("Average Age: " + totalAge/total);
     }
 
     private Component moneyPerMonthChart(){
-        Chart chart = new Chart(ChartType.LINE);
+
         ArrayList<Double> list = appUser.getBank().getMoneyPerMonth();
         DataSeries dataSeries = new DataSeries();
         for(int i = 0; i < list.size(); i++){
             dataSeries.add(new DataSeriesItem(i, list.get(i)));
         }
+        chart2.getConfiguration().setSeries(dataSeries);
+
+        return chart2;
+    }
+
+    private void resetAll(){
+        DataSeries dataSeries = new DataSeries();
+        dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));
+        dataSeries.add(new DataSeriesItem("Pending", personService.findAllPending(appUser.getBank(), Person.Status.PENDING).size()));
+        dataSeries.add(new DataSeriesItem("Rejected", personService.findAllRejected(appUser.getBank(), Person.Status.REJECTED).size()));
         chart.getConfiguration().setSeries(dataSeries);
 
-        return chart;
+        ArrayList<Double> list = appUser.getBank().getMoneyPerMonth();
+        DataSeries dataSeries2 = new DataSeries();
+        for(int i = 0; i < list.size(); i++){
+            dataSeries2.add(new DataSeriesItem(i, list.get(i)));
+        }
+        chart2.getConfiguration().setSeries(dataSeries2);
+
+        List<Person> people = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
+        int total = people.size();
+        double totalAge = 0.0;
+
+        for(Person p : people){
+            totalAge += p.getAge();
+        }
+
+        age.setText("Average Age: " + totalAge/total);
+
+        double totalScore = 0.0;
+
+        for(Person p : people){
+            totalScore += p.getCreditScore();
+        }
+
+        creditScore.setText("Average Credit Score: " + totalScore/total);
+
+        bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
     }
 
 }

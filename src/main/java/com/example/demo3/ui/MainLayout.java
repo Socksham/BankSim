@@ -62,7 +62,6 @@ public class MainLayout extends AppLayout {
             SavingsAccount savingsAccount;
             InvestingAccount investingAccount = null;
             Random rand = new Random();
-            System.out.println(appUser);
             Person personToAdd = new Person(appUser.getBank(), firsts[(rand.nextInt(firsts.length))], lasts[(rand.nextInt(lasts.length))],
                     (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18);
 
@@ -228,6 +227,7 @@ public class MainLayout extends AppLayout {
                     }
                 }
                 appUser.getBank().setMoney(appUser.getBank().getMoney() + person.getCreditAccount().getAmountOfMoney() + person.getSavingsAccount().getAmountOfMoney());
+                appUser.getBank().addToMoneyStat(appUser.getBank().getMoney());
             }
             System.out.println("TIMER");
         }
@@ -299,7 +299,7 @@ public class MainLayout extends AppLayout {
         RouterLink bankTycoon = new RouterLink("Bank Tycoon", HomeView.class);
         H1 logo = new H1(this.username);
         logo.addClassName("logo");
-        bankNum.setText("Amount: " + appUser.getBank().getMoney());
+        bankNum.setText("Amount: " + myRound(appUser.getBank().getMoney(), 2));
         bankNum.addClassName("logo");
 
         Anchor logout = new Anchor("/logout", "Log out");
@@ -324,5 +324,11 @@ public class MainLayout extends AppLayout {
         ));
     }
 
+    private double myRound(double numToRound, int placeValue){
+        numToRound = numToRound*(Math.pow(10, placeValue));
+        numToRound = Math.round(numToRound);
+        numToRound = numToRound/(Math.pow(10, placeValue));
+        return numToRound;
+    }
 
 }

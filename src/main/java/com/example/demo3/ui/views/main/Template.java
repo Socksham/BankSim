@@ -17,4 +17,11 @@ public class Template extends VerticalLayout {
     public static boolean buyTvAdButton = false;
     public static boolean buyBillboardAdButton = false;
     public static int secondsPerCustomer = 5000;
+
+    private double myRound(double numToRound, int placeValue){
+        numToRound = numToRound*(Math.pow(10, placeValue));
+        numToRound = Math.round(numToRound);
+        numToRound = numToRound/(Math.pow(10, placeValue));
+        return numToRound;
+    }
 }
