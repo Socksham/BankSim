@@ -29,7 +29,7 @@ public class LoansView extends Template {
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Button refresh = new Button("Refresh");
-    Notification notification = new Notification("Not enough funds to accept loan", 3000, Notification.Position.BOTTOM_END);
+    Notification notification = new Notification("Not enough funds to accept loan!", 3000, Notification.Position.BOTTOM_END);
     Grid<Loan> grid;
 
     public LoansView(LoanService loanService, PersonService personService){
