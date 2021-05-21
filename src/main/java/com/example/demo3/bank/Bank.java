@@ -4,6 +4,7 @@ import com.example.demo3.AbstractEntity;
 import com.example.demo3.appuser.AppUser;
 import com.example.demo3.loan.Loan;
 import com.example.demo3.person.Person;
+import com.example.demo3.stocktransactions.StockTransaction;
 import com.vaadin.flow.component.polymertemplate.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,8 +35,10 @@ public class Bank extends AbstractEntity {
     private AppUser user;
     @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Person> persons = new LinkedList<>();
-    @OneToMany(mappedBy = "bank", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "bank", cascade = CascadeType.ALL)
     private List<Loan> loans = new LinkedList<>();
+    @OneToMany(mappedBy = "bank", cascade = CascadeType.ALL)
+    private List<StockTransaction> stocks = new LinkedList<>();
     private double scoreUnder630 = 0.085;
     private double scoreUnder690 = 0.074;
     private double scoreUnder720 = 0.066;

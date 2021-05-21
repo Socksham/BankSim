@@ -14,6 +14,7 @@ import com.example.demo3.ui.views.main.customers.CustomersView;
 import com.example.demo3.ui.views.main.home.HomeView;
 import com.example.demo3.ui.views.main.loans.AcceptedLoansView;
 import com.example.demo3.ui.views.main.loans.LoansView;
+import com.example.demo3.ui.views.main.stocks.StocksView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
@@ -321,7 +322,9 @@ public class MainLayout extends AppLayout {
                 new RouterLink("Accepted Customers", AcceptedCustomersView.class),
                 new RouterLink("Loans", LoansView.class),
                 new RouterLink("Accepted Loans", AcceptedLoansView.class),
-                new RouterLink("Advertisement", AdvertisementView.class)
+                new RouterLink("Advertisement", AdvertisementView.class),
+                new RouterLink("Stocks", StocksView.class)
+
         ));
     }
 
