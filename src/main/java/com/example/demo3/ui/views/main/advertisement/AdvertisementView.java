@@ -260,15 +260,15 @@ public class AdvertisementView extends Template {
         billBoardAd.addClassName("ad");
 
         buyNewspaperAd.addClickListener(buttonClickEvent -> buyNewspaperAd());
-        newsPaperAd = new Div(new Label("Newspaper Ad"), new Label("Price: $100000"), buyNewspaperAd);
+        newsPaperAd = new Div(new Label("Newspaper Ad"), new Label("Price: $10000"), buyNewspaperAd);
         newsPaperAd.addClassName("ad");
 
         buyRadioAd.addClickListener(buttonClickEvent -> buyRadioAd());
-        radioAd = new Div(new Label("Radio Ad"), new Label("Price: $100000"), buyRadioAd);
+        radioAd = new Div(new Label("Radio Ad"), new Label("Price: $30000"), buyRadioAd);
         radioAd.addClassName("ad");
 
         buyTvAd.addClickListener(buttonClickEvent -> buyTvAd());
-        tvAd = new Div(new Label("Tv Ad"), new Label("Price: $100000"), buyTvAd);
+        tvAd = new Div(new Label("Tv Ad"), new Label("Price: $50000"), buyTvAd);
         tvAd.addClassName("ad");
 
         resetButtons();

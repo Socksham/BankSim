@@ -66,7 +66,7 @@ public class AcceptedLoansView extends Template {
 
     //update list on button click
     private void updateList() {
-        grid.setItems(loanService.findAllAccepted(appUser.getBank(), Loan.Status.PENDING));
+        grid.setItems(loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED));
     }
 
 }

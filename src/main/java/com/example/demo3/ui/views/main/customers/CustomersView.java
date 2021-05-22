@@ -97,7 +97,7 @@ public class CustomersView extends Template {
             evt.getContact().getInvestingAccount().setRole(InvestingAccount.Status.REJECTED);
         }catch (NullPointerException n){
         }
-        appUser.getBank().setInvestingAccountValue(appUser.getBank().getInvestingAccountValue() + evt.getContact().getInvestingAccount().getAmountOfMoney());
+
         personService.save(evt.getContact());
         updateList();
         closeEditor();
