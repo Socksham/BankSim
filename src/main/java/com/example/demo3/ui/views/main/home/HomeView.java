@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.List;
 
+//analytics
 @org.springframework.stereotype.Component
 @Scope("prototype")
 @Route(value = "", layout = MainLayout.class)
@@ -41,7 +42,6 @@ public class HomeView extends VerticalLayout {
     Label age = new Label();
     Label bankMoney = new Label();
 
-
     public HomeView(LoanService loanService, PersonService personService){
         this.loanService = loanService;
         this.personService = personService;
@@ -51,8 +51,10 @@ public class HomeView extends VerticalLayout {
             System.out.println(username);
         }
 
+        //add click listener
         refresh.addClickListener(click -> resetAll());
 
+        //set bank money
         bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
 
         avgAge();
@@ -68,6 +70,7 @@ public class HomeView extends VerticalLayout {
         add(bankMoney, pieCharts, chart2, creditScore, age, refresh);
     }
 
+    //sets series for pie chart1
     private void parChart(){
         DataSeries dataSeries = new DataSeries();
         dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));
@@ -77,6 +80,7 @@ public class HomeView extends VerticalLayout {
         chart.getConfiguration().setSeries(dataSeries);
     }
 
+    //set series for pie chart2
     private void loanParChart(){
         DataSeries dataSeries2 = new DataSeries();
         dataSeries2.add(new DataSeriesItem("Accepted", loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED).size()));
@@ -86,6 +90,7 @@ public class HomeView extends VerticalLayout {
         chart3.getConfiguration().setSeries(dataSeries2);
     }
 
+    //set avgCreditScore
     private void avgCreditScore(){
         List<Person> people = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
         int total = people.size();
@@ -98,6 +103,7 @@ public class HomeView extends VerticalLayout {
         creditScore.setText("Average Credit Score: " + totalScore/total);
     }
 
+    //set avgAge
     private void avgAge(){
         List<Person> people = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
         int total = people.size();
@@ -110,6 +116,7 @@ public class HomeView extends VerticalLayout {
         age.setText("Average Age: " + totalAge/total);
     }
 
+    //set line chart series
     private void moneyPerMonthChart(){
 
         ArrayList<Double> list = appUser.getBank().getMoneyPerMonth();
@@ -120,6 +127,7 @@ public class HomeView extends VerticalLayout {
         chart2.getConfiguration().setSeries(dataSeries);
     }
 
+    //reset all charts on new data
     private void resetAll(){
         DataSeries dataSeries = new DataSeries();
         dataSeries.add(new DataSeriesItem("Accepted", personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size()));

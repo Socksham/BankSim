@@ -1,7 +1,8 @@
-package com.example.demo3.ui.views.main.stocks;
+package com.example.demo3.ui.views.main.accounts;
 
+import com.example.demo3.accounts.investingaccount.InvestingAccount;
+import com.example.demo3.accounts.investingaccount.InvestingAccountService;
 import com.example.demo3.appuser.AppUser;
-import com.example.demo3.stock.Stock;
 import com.example.demo3.stocktransactions.StockTransaction;
 import com.example.demo3.stocktransactions.StockTransactionService;
 import com.example.demo3.ui.MainLayout;
@@ -10,28 +11,25 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import org.json.JSONException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-
-//Stock Transactions
+//investing accounts view
 @Component
 @Scope("prototype")
-@Route(value = "/stocktransactions", layout = MainLayout.class)
-@PageTitle("Bank | Stock Transactions")
-public class StockTransactionsView extends Template {
-    StockTransactionService stockTransactionService;
-    Grid<StockTransaction> grid = new Grid<>(StockTransaction.class);
+@Route(value = "/investingaccounts", layout = MainLayout.class)
+@PageTitle("Bank | Investing Accounts")
+public class InvestingAccountsView extends Template {
+    InvestingAccountService investingAccountService;
+    Grid<InvestingAccount> grid = new Grid<>(InvestingAccount.class);
     String username;
     AppUser appUser;
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Button refresh = new Button("Refresh");
 
-    public StockTransactionsView(StockTransactionService stockTransactionService){
-        this.stockTransactionService = stockTransactionService;
+    public InvestingAccountsView(InvestingAccountService investingAccountService){
+        this.investingAccountService = investingAccountService;
 
         setSizeFull();
 
@@ -51,14 +49,14 @@ public class StockTransactionsView extends Template {
 
     }
 
-    //configure grid columns
+    //configure the grid and set columns
     private void configureGrid(){
         grid.setSizeFull();
-        grid.setColumns("stock", "pricePerStock", "amount_of_stock", "transactionRole");
+        grid.setColumns("person.firstName", "person.lastName", "amountOfMoney");
     }
 
-    //update the list on button click
+    //update list on refresh button click
     private void updateList() {
-        grid.setItems(stockTransactionService.findAll(appUser.getBank()));
+        grid.setItems(investingAccountService.findAll(appUser.getBank(), InvestingAccount.Status.ACCEPTED));
     }
 }

@@ -13,12 +13,15 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public interface LoanRepository extends JpaRepository<Loan, Long> {
+    //find all pending person objects
     @Query("SELECT c FROM Loan c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.loanRole = :pending")
     List<Loan> searchPending(@Param("term") Bank term, @Param("pending")Loan.Status pending);
 
+    //find all accepted person objects
     @Query("SELECT c FROM Loan c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.loanRole = :accepted")
     List<Loan> searchAccepted(@Param("term") Bank term, @Param("accepted")Loan.Status accepted);
 
+    //find all rejected person objects
     @Query("SELECT c FROM Loan c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.loanRole = :rejected")
     List<Loan> searchRejected(@Param("term") Bank term, @Param("rejected")Loan.Status rejected);
 }

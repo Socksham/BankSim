@@ -13,7 +13,8 @@ public class InvestingAccountService {
         this.investingAccountRepository = investingAccountRepository;
     }
 
-    public List<InvestingAccount> findAll(Bank bank){
-        return investingAccountRepository.findAll(bank);
+    //call function in repository
+    public List<InvestingAccount> findAll(Bank bank, InvestingAccount.Status status){
+        return investingAccountRepository.findAll(bank, status);
     }
 }

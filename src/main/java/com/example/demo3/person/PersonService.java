@@ -17,6 +17,7 @@ public class PersonService {
         this.personRepository = personRepository2;
     }
 
+    //call functions in repository
     public void save(Person person){
         if(person == null){
             LOGGER.log(Level.SEVERE, "Person is null. Are you sure you have connected your form to the application?");

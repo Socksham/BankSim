@@ -15,10 +15,13 @@ import javax.persistence.*;
 @Setter
 public class StockTransaction extends AbstractEntity {
 
+    //status class
     public enum Status {
         BUY, SELL
     }
 
+    //all local vars
+    //id generator
     @SequenceGenerator(
             name="stocks_sequence",
             sequenceName = "stocks_sequence"

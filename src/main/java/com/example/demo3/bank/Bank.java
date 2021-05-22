@@ -20,6 +20,9 @@ import java.util.List;
 @Getter
 @Setter
 public class Bank extends AbstractEntity {
+
+    //local vars here
+    //id generator
     @SequenceGenerator(
             name="bank_sequence",
             sequenceName = "bank_sequence",
@@ -54,6 +57,7 @@ public class Bank extends AbstractEntity {
         moneyPerMonth.add(money);
     }
 
+    //simple add money rather than needing to use getter and setters
     public void addToMoneyStat(Double amount){
         moneyPerMonth.add(amount);
     }

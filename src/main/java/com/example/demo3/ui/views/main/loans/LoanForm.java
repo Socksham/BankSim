@@ -17,6 +17,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToDoubleConverter;
 import com.vaadin.flow.shared.Registration;
 
+//form similar to PersonForm but for loans
 public class LoanForm extends FormLayout {
     TextField amountOfLoan = new TextField("Loan Amount");
     ComboBox<Loan.Status> status = new ComboBox<>("Status");
@@ -44,6 +45,7 @@ public class LoanForm extends FormLayout {
         );
     }
 
+    //create button layouts
     private Component createButtonsLayout() {
         accept.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         reject.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -61,6 +63,7 @@ public class LoanForm extends FormLayout {
         return new HorizontalLayout(accept, reject, close);
     }
 
+    //accept and reject loans, fire event classes
     private void validateAndAccept() {
         try {
             binder.writeBean(loan);
@@ -79,6 +82,7 @@ public class LoanForm extends FormLayout {
         }
     }
 
+    //event classes
     public static abstract class LoanFormEvent extends ComponentEvent<LoanForm> {
         private Loan contact;
 

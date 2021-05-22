@@ -21,7 +21,8 @@ import java.util.Collections;
 @NoArgsConstructor
 @Entity
 public class AppUser implements UserDetails {
-
+    //all variables set here
+    //id generator
     @SequenceGenerator(
             name="student_sequence",
             sequenceName = "student_sequence",
@@ -64,6 +65,7 @@ public class AppUser implements UserDetails {
         this.bank = new Bank(this, 5000);
     }
 
+    //getter and setter functions
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(appUserRole.name());

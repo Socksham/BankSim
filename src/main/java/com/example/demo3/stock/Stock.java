@@ -18,6 +18,8 @@ import javax.persistence.SequenceGenerator;
 @Getter
 @Setter
 public class Stock extends AbstractEntity {
+    //local vars
+    //id generator
     @SequenceGenerator(
             name="stock_sequence",
             sequenceName = "stock_sequence"

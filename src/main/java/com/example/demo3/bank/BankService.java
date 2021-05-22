@@ -13,6 +13,7 @@ public class BankService {
     private BankRepository bankRepository;
     private static final Logger LOGGER = Logger.getLogger(PersonService.class.getName());
 
+    //call save function in repository
     public void save(Bank person){
         if(person == null){
             LOGGER.log(Level.SEVERE, "Person is null. Are you sure you have connected your form to the application?");

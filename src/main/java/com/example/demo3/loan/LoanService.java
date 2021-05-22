@@ -19,6 +19,7 @@ public class LoanService {
         this.loanRepository = loanRepository;
     }
 
+    //used to call functions in repository
     public List<Loan> findAllPending(Bank bank, Loan.Status s){
         return this.loanRepository.searchPending(bank, s);
     }
@@ -29,6 +30,7 @@ public class LoanService {
         return this.loanRepository.searchRejected(bank, s);
     }
 
+    //call save function in repository
     public void save(Loan person){
         if(person == null){
             LOGGER.log(Level.SEVERE, "Person is null. Are you sure you have connected your form to the application?");

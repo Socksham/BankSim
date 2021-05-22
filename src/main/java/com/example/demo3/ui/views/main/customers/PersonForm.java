@@ -17,6 +17,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import com.vaadin.flow.shared.Registration;
 
+//for to accept and reject people (in same div as the view)
 public class PersonForm extends FormLayout {
     TextField firstName = new TextField("First name");
     TextField lastName = new TextField("Last name");
@@ -55,6 +56,7 @@ public class PersonForm extends FormLayout {
         );
     }
 
+    //create layout of buttons
     private Component createButtonsLayout() {
         accept.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         reject.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -72,6 +74,7 @@ public class PersonForm extends FormLayout {
         return new HorizontalLayout(accept, reject, close);
     }
 
+    //fire events that can be caught in the view
     private void validateAndAccept() {
         try {
             binder.writeBean(person);
@@ -90,11 +93,13 @@ public class PersonForm extends FormLayout {
         }
     }
 
+    //set the contact in the binder
     public void setContact(Person contact) {
         this.person = contact;
         binder.readBean(contact);
     }
 
+    //events class. used to communicate with the view
     public static abstract class PersonFormEvent extends ComponentEvent<PersonForm> {
         private Person contact;
 

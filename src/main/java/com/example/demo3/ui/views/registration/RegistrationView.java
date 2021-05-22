@@ -12,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
+
 @Route(value = "/register")
 @PageTitle("Register | Banking")
 public class RegistrationView extends VerticalLayout {
@@ -41,6 +42,7 @@ public class RegistrationView extends VerticalLayout {
         );
     }
 
+    //save user
     private void saveUser(){
         if(!appUserService.signUpUser(new AppUser(firstName.getValue(), lastName.getValue(), email.getValue(), password.getValue())).equals("ERROR")){
             UI.getCurrent().navigate("/login");

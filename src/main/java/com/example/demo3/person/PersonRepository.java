@@ -10,15 +10,19 @@ import java.util.List;
 
 @Repository
 public interface PersonRepository extends JpaRepository<Person, Long> {
+    //find all pending
     @Query("SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.status = :pending")
     List<Person> searchPending(@Param("term")Bank term, @Param("pending")Person.Status pending);
 
+    //find all accepted
     @Query(value = "SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.status = :accepted")
     List<Person> searchAccepted(@Param("term")Bank term, @Param("accepted")Person.Status accepted);
 
+    //find all rejected
     @Query("SELECT c FROM Person c WHERE concat(c.bank.id, '') LIKE concat('%', :term, '%') AND c.status = :rejected")
     List<Person> searchRejected(@Param("term")Bank term, @Param("rejected")Person.Status rejected);
 
+    //find by name
     @Query("SELECT c FROM Person c WHERE c.firstName LIKE %?1%")
     List<Person> searchByName(String term);
 }

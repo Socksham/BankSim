@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Predicate;
 
+//not used
 @Service
 public class EmailValidator implements Predicate<String> {
 

@@ -9,6 +9,7 @@ import java.util.List;
 public class StockService {
     private StockRepository stockRepository;
 
+    //call repository functions
     public StockService(StockRepository stockRepository){
         this.stockRepository = stockRepository;
     }

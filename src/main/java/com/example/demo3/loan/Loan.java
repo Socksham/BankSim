@@ -16,10 +16,13 @@ import javax.persistence.*;
 @Setter
 public class Loan extends AbstractEntity {
 
+    //status class
     public enum Status {
         ACCEPTED, REJECTED, PENDING, PAID
     }
 
+    //all vars stored here
+    //id generator
     @SequenceGenerator(
             name="loan_sequence",
             sequenceName = "loan_sequence",
@@ -64,6 +67,7 @@ public class Loan extends AbstractEntity {
         System.out.println("Monthly Payment: " + monthlyPayment + " Loan Amount: " + amountOfLoan + "Interest: " + interest + " Loan Rate: " + loanRate + " Months To Pay: " + monthsToPay);
     }
 
+    //rounding function
     private double myRound(double numToRound, int placeValue){
         numToRound = numToRound*(Math.pow(10,placeValue));
         numToRound = Math.round(numToRound);

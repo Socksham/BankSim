@@ -7,6 +7,7 @@ import com.example.demo3.bank.Bank;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+//service for registering users. from vaadin tutorial series
 @Service
 @AllArgsConstructor
 public class RegistrationService {

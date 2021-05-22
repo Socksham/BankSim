@@ -5,6 +5,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+//from vaadin tutorial series
 @MappedSuperclass
 public abstract class AbstractEntity {
     @Id

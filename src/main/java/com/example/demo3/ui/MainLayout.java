@@ -8,12 +8,14 @@ import com.example.demo3.loan.Loan;
 import com.example.demo3.loan.LoanService;
 import com.example.demo3.person.Person;
 import com.example.demo3.person.PersonService;
+import com.example.demo3.ui.views.main.accounts.InvestingAccountsView;
 import com.example.demo3.ui.views.main.advertisement.AdvertisementView;
 import com.example.demo3.ui.views.main.customers.AcceptedCustomersView;
 import com.example.demo3.ui.views.main.customers.CustomersView;
 import com.example.demo3.ui.views.main.home.HomeView;
 import com.example.demo3.ui.views.main.loans.AcceptedLoansView;
 import com.example.demo3.ui.views.main.loans.LoansView;
+import com.example.demo3.ui.views.main.stocks.StockTransactionsView;
 import com.example.demo3.ui.views.main.stocks.StocksView;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
@@ -37,7 +39,7 @@ import java.util.TimerTask;
 
 import static com.example.demo3.ui.views.main.Template.*;
 
-
+//App layout view
 @CssImport("./styles/shared-styles.css")
 public class MainLayout extends AppLayout {
 
@@ -56,18 +58,20 @@ public class MainLayout extends AppLayout {
 
     int months = 0;
 
+    //class that runs function every blank seconds(depends on the time set for the bank)
     public class addPerson extends TimerTask {
-
         public void run() {
             months++;
             CreditAccount creditAccount;
             SavingsAccount savingsAccount;
             InvestingAccount investingAccount = null;
             Random rand = new Random();
+            //create a person
             Person personToAdd = new Person(appUser.getBank(), firsts[(rand.nextInt(firsts.length))], lasts[(rand.nextInt(lasts.length))],
                     (int)(Math.random() * ((850 - 300) + 1))+300, (int)(Math.random() * ((65 - 18) + 1))+18);
 
-            if(personToAdd.getAge() < 30){
+            //add accounts based on age and credit score
+            if(personToAdd.getAge() < 24){
                 if(personToAdd.getCreditScore() < 630){
                     creditAccount = new CreditAccount(personToAdd, 500.0 + (1000.0 - 500.0) * rand.nextDouble());
                     savingsAccount = new SavingsAccount(personToAdd, 5000.0 + (10000.0 - 5000.0) * rand.nextDouble());
@@ -142,14 +146,15 @@ public class MainLayout extends AppLayout {
                     investingAccount.setAmountOfMoney(myRound(investingAccount.getAmountOfMoney(), 2));
                 }
             }
+            //set all accounts
             personToAdd.setCreditAccount(creditAccount);
             personToAdd.setSavingsAccount(savingsAccount);
             if(null != investingAccount){
                 System.out.println("WIEUGFEIOUGWIYSGFWIEKYGFWGEIY");
                 personToAdd.setInvestingAccount(investingAccount);
-                appUser.getBank().setInvestingAccountValue(appUser.getBank().getInvestingAccountValue() + investingAccount.getAmountOfMoney());
             }
 
+            //get all accepted players and create loans
             int n = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED).size();
             List<Person> peopleAccepted = personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED);
 
@@ -169,6 +174,8 @@ public class MainLayout extends AppLayout {
                 Loan loan = new Loan(p, myRound(1000.0 + (100000.0 - 1000.0) * rand.nextDouble(), 2), appUser.getBank(), (int)(Math.random() * ((30 - 3) + 1))+3);
                 loanService.save(loan);
             }
+
+            //add monthly payments for each accepted loan
             List<Loan> loansAccepted = loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED);
             for(Loan loan : loansAccepted){
                 if(loan.getPerson() != personToAdd){
@@ -182,6 +189,7 @@ public class MainLayout extends AppLayout {
                 }
             }
 
+            //add and remove money based on changes in checking and savings accounts
             for(Person person : peopleAccepted){
                 if (!peopleAcceptedRecently.contains(person)) {
                     System.out.println("WIGYFWOFGIYWOIGUFWEIYFGIOYGWEFYOGWUEFIUFY");
@@ -204,7 +212,7 @@ public class MainLayout extends AppLayout {
                         }
                         if (person.getCreditAccount().getAmountOfMoney() < 100.0) {
                             person.setStatus(Person.Status.BANKRUPT);
-                            }
+                        }
                     } else if (person.getCreditScore() < 720) {
                         person.getCreditAccount().setAmountOfMoney(person.getCreditAccount().getAmountOfMoney() - 358.0);
                         person.getCreditAccount().setAmountOfMoney(myRound(person.getCreditAccount().getAmountOfMoney() + 358.0 + (650.0 - 358.0) * rand.nextDouble(), 2));
@@ -229,11 +237,13 @@ public class MainLayout extends AppLayout {
 
             }
 
+            //clear all recently added people
             peopleAcceptedRecently.clear();
             System.out.println("##00 " + appUser.getBank().getMoney());
             appUser.getBank().addToMoneyStat(appUser.getBank().getMoney());
             System.out.println("TIMER");
         }
+        //rounding function
         private double myRound(double numToRound, int placeValue){
             numToRound = numToRound*(Math.pow(10,placeValue));
             numToRound = Math.round(numToRound);
@@ -261,6 +271,7 @@ public class MainLayout extends AppLayout {
         System.out.println("WLIUFHWEIFUHEIFOUGWEFIYGEIFYBWEIYFUBEFUYWEYIUFG");
     }
 
+    //reset bankNum and change state of bank
     private void resetNum(){
         bankNum.setText("Amount: " + appUser.getBank().getMoney());
         openBank.addClickListener(click -> changeState());
@@ -271,6 +282,7 @@ public class MainLayout extends AppLayout {
         }
     }
 
+    //changes state of bank
     private void changeState(){
         if(bankState){
             bankState = false;
@@ -284,6 +296,7 @@ public class MainLayout extends AppLayout {
         }
     }
 
+    //create header for not logged in users
     private void createHeaderNotLoggedIn() {
         H1 logo = new H1("Bank");
         logo.addClassName("logo");
@@ -299,6 +312,7 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    //create header for logged in users
     private void createHeaderLoggedIn() {
         RouterLink bankTycoon = new RouterLink("Bank Tycoon", HomeView.class);
         H1 logo = new H1(this.username);
@@ -317,6 +331,7 @@ public class MainLayout extends AppLayout {
         addToNavbar(header);
     }
 
+    //create the side drawer
     private void createDrawerLoggedIn() {
 
         addToDrawer(new VerticalLayout(
@@ -325,11 +340,13 @@ public class MainLayout extends AppLayout {
                 new RouterLink("Loans", LoansView.class),
                 new RouterLink("Accepted Loans", AcceptedLoansView.class),
                 new RouterLink("Advertisement", AdvertisementView.class),
-                new RouterLink("Stocks", StocksView.class)
-
+                new RouterLink("Stocks", StocksView.class),
+                new RouterLink("Stock Transactions", StockTransactionsView.class),
+                new RouterLink("Investing Accounts", InvestingAccountsView.class)
         ));
     }
 
+    //rounding function
     private double myRound(double numToRound, int placeValue){
         numToRound = numToRound*(Math.pow(10, placeValue));
         numToRound = Math.round(numToRound);

@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+//shows all accepted loans
 @Component
 @Scope("prototype")
 @Route(value = "/acceptedloans", layout = MainLayout.class)
@@ -55,6 +56,7 @@ public class AcceptedLoansView extends Template {
 
     }
 
+    //configure grid columns
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
@@ -62,6 +64,7 @@ public class AcceptedLoansView extends Template {
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
     }
 
+    //update list on button click
     private void updateList() {
         grid.setItems(loanService.findAllAccepted(appUser.getBank(), Loan.Status.PENDING));
     }

@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+//configuration for web urls. checks what user is allowed and not allowed to see
 @Configuration
 @AllArgsConstructor
 @EnableWebSecurity

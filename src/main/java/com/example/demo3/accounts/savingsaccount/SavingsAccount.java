@@ -1,5 +1,6 @@
 package com.example.demo3.accounts.savingsaccount;
 
+import com.example.demo3.accounts.checkingaccount.CreditAccount;
 import com.example.demo3.appuser.AppUser;
 import com.example.demo3.person.Person;
 import lombok.Getter;
@@ -14,6 +15,12 @@ import javax.persistence.*;
 @Getter
 @Setter
 public class SavingsAccount extends AbstractEntity {
+    //role class
+    public enum Status {
+        ACCEPTED, REJECTED, PENDING
+    }
+
+    //id generator
     @SequenceGenerator(
             name="savings_sequence",
             sequenceName = "savings_sequence",
@@ -25,12 +32,18 @@ public class SavingsAccount extends AbstractEntity {
             generator = "savings_sequence"
     )
     private Long id;
+    //person class connection
     @ManyToOne(cascade = CascadeType.ALL)
     private Person person;
+    //money amount variable
     private double amountOfMoney;
+    //role variable
+    @Enumerated(EnumType.STRING)
+    private SavingsAccount.Status role;
 
     public SavingsAccount(Person person, double amountOfMoney){
         this.person = person;
         this.amountOfMoney = amountOfMoney;
+        this.role = SavingsAccount.Status.PENDING;
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+//show all loans pending in grid
 @Component
 @Scope("prototype")
 @Route(value = "/loans", layout = MainLayout.class)
@@ -56,6 +57,7 @@ public class LoansView extends Template {
         loanForm.addListener(LoanForm.RejectEvent.class, this::saveLoanReject);
         loanForm.addListener(PersonForm.CloseEvent.class, e -> closeEditor());
 
+        //div with grid and form
         Div content = new Div(grid, loanForm);
         content.addClassName("content");
         content.setSizeFull();
@@ -66,6 +68,7 @@ public class LoansView extends Template {
         closeEditor();
     }
 
+    //save and reject loans
     private void saveLoanAccept(LoanForm.AcceptEvent evt) {
         if(appUser.getBank().getMoney() - evt.getContact().getAmountOfLoan() > 0){
             evt.getContact().setLoanRole(Loan.Status.ACCEPTED);
@@ -86,6 +89,7 @@ public class LoansView extends Template {
         closeEditor();
     }
 
+    //cinfigure grid columns
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
@@ -95,6 +99,7 @@ public class LoansView extends Template {
 
     }
 
+    //set loanForm loan
     private void editPerson(Loan contact) {
         if (contact == null) {
             closeEditor();
@@ -105,6 +110,7 @@ public class LoansView extends Template {
         }
     }
 
+    //close editor
     private void closeEditor() {
         loanForm.setContact(null);
         loanForm.setVisible(false);
@@ -112,11 +118,12 @@ public class LoansView extends Template {
         removeClassName("editing");
     }
 
+    //reset bankNum variable
     private void resetNum(){
         bankNum.setText("Amount: " + appUser.getBank().getMoney());
     }
 
-
+    //update list on button click
     private void updateList() {
         grid.setItems(loanService.findAllPending(appUser.getBank(), Loan.Status.PENDING));
     }

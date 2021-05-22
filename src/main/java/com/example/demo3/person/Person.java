@@ -20,10 +20,13 @@ import java.util.List;
 @Setter
 public class Person extends AbstractEntity implements Cloneable {
 
+    //status class
     public enum Status {
         ACCEPTED, REJECTED, PENDING, BANKRUPT
     }
 
+    //all local vars
+    //id generator
     @SequenceGenerator(
             name="person_sequence",
             sequenceName = "person_sequence",

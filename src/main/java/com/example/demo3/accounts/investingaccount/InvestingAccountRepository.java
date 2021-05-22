@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 @Transactional(readOnly = true)
 public interface InvestingAccountRepository extends JpaRepository<InvestingAccount, Long> {
-    @Query("SELECT c FROM InvestingAccount c WHERE concat(c.person.bank.id, '') LIKE concat('%', :bank, '%')")
-    List<InvestingAccount> findAll(@Param("bank") Bank bank);
+    //query database for items involving the parameters
+    @Query("SELECT c FROM InvestingAccount c WHERE concat(c.person.bank.id, '') LIKE concat('%', :bank, '%') AND c.person.investingAccount.role = :term")
+    List<InvestingAccount> findAll(@Param("bank") Bank bank, @Param("term") InvestingAccount.Status status);
 }

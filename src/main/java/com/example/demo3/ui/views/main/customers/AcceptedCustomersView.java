@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+//shows all accepted customers in grid
 @Component
 @Scope("prototype")
 @Route(value = "/acceptedcustomers", layout = MainLayout.class)
@@ -57,6 +58,7 @@ public class AcceptedCustomersView extends Template {
 
     }
 
+    //close person form editor
     private void closeEditor() {
         personForm.setContact(null);
         personForm.setVisible(false);
@@ -64,6 +66,7 @@ public class AcceptedCustomersView extends Template {
         removeClassName("editing");
     }
 
+    //save and reject the contacts
     private void saveContactAccept(PersonForm.AcceptEvent evt) {
         evt.getContact().setStatus(Person.Status.ACCEPTED);
         personService.save(evt.getContact());
@@ -77,6 +80,7 @@ public class AcceptedCustomersView extends Template {
         closeEditor();
     }
 
+    //configure grid columns
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
@@ -89,6 +93,7 @@ public class AcceptedCustomersView extends Template {
         grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
     }
 
+    //set the person in the form
     private void editPerson(Person contact) {
         if (contact == null) {
             closeEditor();
@@ -99,6 +104,7 @@ public class AcceptedCustomersView extends Template {
         }
     }
 
+    //update list on button click
     private void updateList() {
         grid.setItems(personService.findAllAccepted(appUser.getBank(), Person.Status.ACCEPTED));
     }

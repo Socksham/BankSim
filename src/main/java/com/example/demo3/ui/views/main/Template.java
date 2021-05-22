@@ -10,6 +10,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.ArrayList;
 import java.util.Timer;
 
+//Template to hold all shared values
 public class Template extends VerticalLayout {
     public static boolean bankState = false;
     public static Timer timer = new Timer();
