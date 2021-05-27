@@ -20,6 +20,7 @@ public class Template extends VerticalLayout {
     public static boolean buyTvAdButton = false;
     public static boolean buyBillboardAdButton = false;
     public static int secondsPerCustomer = 5000;
+    public static int months = 0;
 
     public static ArrayList<Person> peopleAcceptedRecently = new ArrayList<Person>();
 

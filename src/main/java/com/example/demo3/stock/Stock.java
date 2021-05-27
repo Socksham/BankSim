@@ -31,18 +31,20 @@ public class Stock extends AbstractEntity {
     )
     private Long id;
     private String stock;
+    private String name;
     private double pricePerStock;
     private String open;
     private String high;
     private String low;
     private String changePercent;
 
-    public Stock(String stock, double pricePerStock, String open, String high, String low, String changePercent) {
+    public Stock(String stock, String name, double pricePerStock, String open, String high, String low, String changePercent) {
         this.stock = stock;
         this.pricePerStock = pricePerStock;
         this.open = open;
         this.high = high;
         this.low = low;
         this.changePercent = changePercent;
+        this.name = name;
     }
 }

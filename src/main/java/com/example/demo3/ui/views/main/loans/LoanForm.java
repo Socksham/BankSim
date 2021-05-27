@@ -38,6 +38,12 @@ public class LoanForm extends FormLayout {
                 .bind( Loan::getAmountOfLoan, Loan::setAmountOfLoan );
         binder.bindInstanceFields(this);
         status.setItems(Loan.Status.values());
+        try{
+            status.setValue(loan.getLoanRole());
+        }catch (NullPointerException ignored){
+
+        }
+
         add(
                 amountOfLoan,
                 status,
@@ -123,5 +129,10 @@ public class LoanForm extends FormLayout {
     public void setContact(Loan contact) {
         this.loan = contact;
         binder.readBean(loan);
+        try{
+            status.setValue(loan.getLoanRole());
+        }catch (NullPointerException ignored){
+
+        }
     }
 }

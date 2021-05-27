@@ -47,12 +47,12 @@ public class PersonForm extends FormLayout {
         binder.bindInstanceFields(this);
         status.setItems(Person.Status.values());
         add(
-            firstName,
-            lastName,
-            creditScore,
-            age,
-            status,
-            createButtonsLayout()
+                firstName,
+                lastName,
+                creditScore,
+                age,
+                status,
+                createButtonsLayout()
         );
     }
 

@@ -3,6 +3,7 @@ package com.example.demo3.ui.views.registration;
 import com.example.demo3.appuser.AppUser;
 import com.example.demo3.appuser.AppUserService;
 import com.example.demo3.registration.RegistrationRequest;
+import com.example.demo3.ui.views.login.LoginView;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.H1;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.textfield.EmailField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.RouterLink;
 
 
 @Route(value = "/register")
@@ -38,14 +40,15 @@ public class RegistrationView extends VerticalLayout {
                 lastName,
                 email,
                 password,
-                register
+                register,
+                new RouterLink("Already have an account? Sign in here.", LoginView.class)
         );
     }
 
     //save user
     private void saveUser(){
         if(!appUserService.signUpUser(new AppUser(firstName.getValue(), lastName.getValue(), email.getValue(), password.getValue())).equals("ERROR")){
-            UI.getCurrent().navigate("/login");
+            UI.getCurrent().navigate("login");
         }
     }
 

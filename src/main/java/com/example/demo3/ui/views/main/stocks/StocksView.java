@@ -162,7 +162,8 @@ public class StocksView extends Template {
 
     //buy or sell stock and close editor
     private void buyStock(StocksForm.BuyEvent evt) throws InterruptedException, IOException, JSONException {
-        if(getCashLeft() - getAmountOfStockFromTransactions(evt.getStock().getStock()) * evt.getStock().getPricePerStock() >= 0){
+        System.out.println("WIEUGWIEUOFGWIY$EGFWEIUYFG" + evt.getStock().getPricePerStock());
+        if(getCashLeft() - (evt.getAmountStock() * evt.getStock().getPricePerStock()) >= 0){
 //            stockTransactionService.save(new StockTransaction(appUser.getBank(), evt
 //                    .getStock().getStock(), evt.getStock().getPricePerStock(), getAmountOfStockFromTransactions(evt.getStock().getStock()), StockTransaction.Status.BUY));
             stockTransactionService.save(new StockTransaction(appUser.getBank(), evt.getStock().getStock(), evt.getStock().getPricePerStock(), evt.getAmountStock(), StockTransaction.Status.BUY));
@@ -276,7 +277,7 @@ public class StocksView extends Template {
     //configure grid columns
     private void configureGrid(){
         grid2.setSizeFull();
-        grid2.setColumns("stock", "pricePerStock");
+        grid2.setColumns("stock", "name");
         grid2.asSingleSelect().addValueChangeListener(evt -> {
             try {
                 showStock(evt.getValue());
@@ -294,9 +295,23 @@ public class StocksView extends Template {
     private void showStock(Stock stock) throws InterruptedException, JSONException, IOException {
         if(stock == null){
             closeEditor();
-            //TODO: show notification
         }else{
-            form.setStock(stock, stock.getOpen(), stock.getHigh(), stock.getLow(), stock.getChangePercent(), getAmountOfStockFromTransactions(stock.getStock()));
+            if(!stock.getChangePercent().equals("")){
+                form.setStock(stock, stock.getOpen(), stock.getHigh(), stock.getLow(), stock.getChangePercent(), getAmountOfStockFromTransactions(stock.getStock()));
+            }else{
+                String symbol = stock.getStock();
+                JSONObject quote = (JSONObject) callApiPriceGetter(symbol).get("Global Quote");
+                double price = Double.parseDouble((String) quote.get("05. price"));
+                stock.setPricePerStock(price);
+                stock.setOpen((String) quote.get("02. open"));
+                stock.setHigh((String) quote.get("03. high"));
+                stock.setLow((String)quote.get("04. low"));
+                stock.setChangePercent((String)quote.get("10. change percent"));
+
+                form.setStock(stock, stock.getOpen(), stock.getHigh(), stock.getLow(), stock.getChangePercent(), getAmountOfStockFromTransactions(stock.getStock()));
+
+                stockService.save(stock);
+            }
             form.setVisible(true);
             addClassName("editing");
         }
@@ -314,23 +329,38 @@ public class StocksView extends Template {
     private void updateList(String name) throws IOException, JSONException, InterruptedException {
         //TODO: get all stocks from api and if stock not in database then add it
         JSONArray objectArray = callApiTextSearch(name);
-        for (int i = 0; i < objectArray.length(); i++)
+        System.out.println("eoiuferiuhegwf" + Objects.requireNonNull(objectArray).length());
+        List<Stock> stocksToShow = new ArrayList<Stock>();
+        for (int i = 0; i < Objects.requireNonNull(objectArray).length(); i++)
         {
+
+
             JSONObject objectInArray = objectArray.getJSONObject(i);
+
 
             String symbol = (String) objectInArray.get("symbol");
             List<Stock> checkStock = stockService.findByName(symbol);
-            if(checkStock.size() <= 0){
-                JSONObject quote = (JSONObject) callApiPriceGetter(symbol).get("Global Quote");
-                double price = Double.parseDouble((String) quote.get("05. price"));
-                stockService.save(new Stock(symbol, price, (String)quote.get("02. open"),
-                        (String)quote.get("03. high"), (String)quote.get("04. low"),
-                        (String)quote.get("10. change percent")));
-                System.out.println("ADDED STOCK " + symbol);
+            if(checkStock.size() == 0){
+                String nameApi = (String) objectInArray.get("name");
+                Stock stockToAdd = new Stock(symbol, nameApi, 0.0, "", "", "", "");
+                stockService.save(stockToAdd);
+                stocksToShow.add(stockToAdd);
+            }else{
+                stocksToShow.add(checkStock.get(0));
             }
+            System.out.println("WQDIOWUHFWEIOUHWOIUF");
+
+
+//            if(checkStock.size() <= 0){
+//                JSONObject quote = (JSONObject) callApiPriceGetter(symbol).get("Global Quote");
+//                double price = Double.parseDouble((String) quote.get("05. price"));
+//                stockService.save(new Stock(symbol, price, (String)quote.get("02. open"),
+//                        (String)quote.get("03. high"), (String)quote.get("04. low"),
+//                        (String)quote.get("10. change percent")));
+//            }
 
         }
-        grid2.setItems(stockService.findByName(name));
+        grid2.setItems(stocksToShow);
     }
 
     //update list

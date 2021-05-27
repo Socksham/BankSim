@@ -1,12 +1,10 @@
 package com.example.demo3.ui.views.login;
 
+import com.example.demo3.ui.views.registration.RegistrationView;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.login.LoginForm;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
-import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.Route;
+import com.vaadin.flow.router.*;
 
 //login form class. from vaadin tutorial series
 @Route("login")
@@ -26,7 +24,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         add(
                 new H1("Bank Tycoon"),
-                login
+                login,
+                new RouterLink("Don't have an account? Sign up here.", RegistrationView.class)
         );
     }
 

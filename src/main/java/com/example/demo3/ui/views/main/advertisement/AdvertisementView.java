@@ -50,8 +50,6 @@ public class AdvertisementView extends Template {
             "Carter", "Julian"};
     String[] lasts = {"Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis"};
 
-    int months = 0;
-
     //class that runs function every blank seconds(depends on the time set for the bank)
     public class addPerson extends TimerTask {
         public void run() {
@@ -173,14 +171,15 @@ public class AdvertisementView extends Template {
             List<Loan> loansAccepted = loanService.findAllAccepted(appUser.getBank(), Loan.Status.ACCEPTED);
             for(Loan loan : loansAccepted){
                 if(loan.getPerson() != personToAdd){
-                    if(loan.getPerson().getLoans().size() < 3){
-                        appUser.getBank().setMoney(myRound(appUser.getBank().getMoney() + loan.getMonthlyPayment(), 2));
+                    appUser.getBank().setMoney(myRound(appUser.getBank().getMoney() + loan.getMonthlyPayment(), 2));
+                    if(months%12 == 0){
                         loan.setYearsToPay(loan.getYearsToPay() - 1);
                     }
                 }
                 if(loan.getYearsToPay() <= 0){
                     loan.setLoanRole(Loan.Status.PAID);
                 }
+                loanService.save(loan);
             }
 
             //add and remove money based on changes in checking and savings accounts
@@ -349,4 +348,3 @@ public class AdvertisementView extends Template {
         }
     }
 }
-

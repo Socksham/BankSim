@@ -40,7 +40,6 @@ public class HomeView extends VerticalLayout {
     Chart chart3 = new Chart(ChartType.PIE);
     Label creditScore = new Label();
     Label age = new Label();
-    Label bankMoney = new Label();
 
     public HomeView(LoanService loanService, PersonService personService){
         this.loanService = loanService;
@@ -55,7 +54,6 @@ public class HomeView extends VerticalLayout {
         refresh.addClickListener(click -> resetAll());
 
         //set bank money
-        bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
 
         avgAge();
         avgCreditScore();
@@ -67,7 +65,7 @@ public class HomeView extends VerticalLayout {
         pieCharts.addClassName("content");
         pieCharts.setWidthFull();
 
-        add(bankMoney, pieCharts, chart2, creditScore, age, refresh);
+        add(pieCharts, chart2, creditScore, age, refresh);
     }
 
     //sets series for pie chart1
@@ -170,8 +168,6 @@ public class HomeView extends VerticalLayout {
         chart3.drawChart(true);
 
         creditScore.setText("Average Credit Score: " + totalScore/total);
-
-        bankMoney = new Label("Amount: " + appUser.getBank().getMoney());
     }
 
 }

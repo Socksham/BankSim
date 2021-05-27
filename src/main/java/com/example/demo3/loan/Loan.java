@@ -45,6 +45,7 @@ public class Loan extends AbstractEntity {
     private double loanRate;
     private double monthlyPayment;
     private double interest;
+    private int months;
 
     public Loan(Person person, double amountOfLoan, Bank bank, int monthsToPay){
         this.person = person;
@@ -62,8 +63,8 @@ public class Loan extends AbstractEntity {
             this.loanRate = bank.getScoreUnder850();
         }
         double i = this.loanRate/12;
-        this.monthlyPayment = myRound((this.amountOfLoan*i*Math.pow((1+i), this.yearsToPay*12))/((Math.pow((1+i), this.yearsToPay*12)) - 1), 2);
         this.interest = myRound(this.amountOfLoan*(1+(this.loanRate*this.yearsToPay)), 2);
+        this.monthlyPayment = myRound((this.interest/12)/this.yearsToPay, 2);
         System.out.println("Monthly Payment: " + monthlyPayment + " Loan Amount: " + amountOfLoan + "Interest: " + interest + " Loan Rate: " + loanRate + " Months To Pay: " + monthsToPay);
     }
 

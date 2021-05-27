@@ -93,7 +93,7 @@ public class LoansView extends Template {
     private void configureGrid() {
         grid.addClassName("contact-grid");
         grid.setSizeFull();
-        grid.setColumns("person.firstName", "person.creditScore", "person.age", "amountOfLoan", "yearsToPay","loanRole");
+        grid.setColumns("person.firstName", "person.creditScore", "amountOfLoan", "loanRate", "monthlyPayment", "yearsToPay", "interest", "loanRole");
         grid.getColumns().forEach(col -> col.setAutoWidth(true));
         grid.asSingleSelect().addValueChangeListener(evt -> editPerson(evt.getValue()));
 
